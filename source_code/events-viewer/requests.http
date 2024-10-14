@@ -1,0 +1,31 @@
+### GET artists
+GET http://localhost:9080/api/artists
+
+### GET one artist
+GET http://localhost:9080/api/artists/18a7acce-a056-44c5-b4cb-e20e65bb84cb
+
+### PUT artist avatar
+PUT http://localhost:9080/api/artists/18a7acce-a056-44c5-b4cb-e20e65bb84cb/avatar
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="avatar"; filename="patrick.png"
+
+< src/main/resources/avatars/patrick.png
+--boundary--
+
+### GET artist avatar
+GET http://localhost:9080/api/artists/18a7acce-a056-44c5-b4cb-e20e65bb84cb/avatar
+
+### PATCH artist avatar
+PATCH http://localhost:9080/api/artists/18a7acce-a056-44c5-b4cb-e20e65bb84cb/avatar
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="avatar"; filename="ariannaGrande.png"
+
+< src/main/resources/avatars/ariannaGrande.png
+--boundary--
+
+### DELETE artist avatar
+DELETE http://localhost:9080/api/artists/18a7acce-a056-44c5-b4cb-e20e65bb84cb/avatar
