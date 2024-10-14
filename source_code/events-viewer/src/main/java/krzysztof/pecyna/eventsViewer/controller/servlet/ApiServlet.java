@@ -9,12 +9,17 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.NotFoundException;
 import krzysztof.pecyna.eventsViewer.artist.controller.api.ArtistController;
 import krzysztof.pecyna.eventsViewer.artist.dto.PatchArtistRequest;
 import krzysztof.pecyna.eventsViewer.artist.dto.PutArtistRequest;
+import krzysztof.pecyna.eventsViewer.component.exception.AvatarDoesNotExistException;
+import krzysztof.pecyna.eventsViewer.component.exception.AvatarExistsException;
 
+import java.io.Console;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,7 +41,7 @@ public class ApiServlet extends HttpServlet {
 
         public static final Pattern ARTIST = Pattern.compile("/artists/(%s)".formatted(UUID.pattern()));
 
-        public static final Pattern ARTIST_AVATAR = Pattern.compile("/artists/(%s)".formatted(UUID.pattern()));
+        public static final Pattern ARTIST_AVATAR = Pattern.compile("/artists/(%s)/avatar".formatted(UUID.pattern()));
 
         public static final Pattern ARTISTS = Pattern.compile("/artists/?");
     }
@@ -104,6 +109,7 @@ public class ApiServlet extends HttpServlet {
         String servletPath = request.getServletPath();
         if (Paths.API.equals(servletPath)) {
             if (path.matches(Patterns.ARTIST.pattern())) {
+                System.out.println("ARTISTS_PUT");
                 UUID uuid = extractUuid(Patterns.ARTIST, path);
                 try {
                     artistController.putArtist(uuid, jsonb.fromJson(request.getReader(), PutArtistRequest.class));
@@ -117,16 +123,20 @@ public class ApiServlet extends HttpServlet {
                 response.setContentType("image/png");
                 UUID uuid = extractUuid(Patterns.ARTIST_AVATAR, path);
                 try {
-                    artistController.putArtistAvatar(uuid, request.getPart("avatar").getInputStream());
+                    try(InputStream is = request.getPart("avatar").getInputStream()) {
+                        artistController.putArtistAvatar(uuid, is);
+                    }
                     response.setStatus(HttpServletResponse.SC_CREATED);
-                } catch (IllegalStateException ex) {
+                } catch (BadRequestException | AvatarExistsException ex) {
                     response.sendError(HttpServletResponse.SC_CONFLICT, ex.getMessage());
-                } catch (NotFoundException ex) {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND, ex.getMessage());
+                } catch (Exception ex){
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
                 }
                 return;
             }
         }
+        System.out.println(path);
+        System.out.println("OUT OF RANGE PUT");
         response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
 
@@ -150,9 +160,13 @@ public class ApiServlet extends HttpServlet {
                 try {
                     artistController.deleteArtistAvatar(uuid);
                     response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                } catch (NotFoundException ex) {
+                } catch (NotFoundException | AvatarDoesNotExistException ex) {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND, ex.getMessage());
                 }
+                catch (IllegalStateException | InternalServerErrorException ex){
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
+                }
+
                 return;
             }
         }
@@ -173,9 +187,11 @@ public class ApiServlet extends HttpServlet {
                 response.setContentType("image/png");
                 UUID uuid = extractUuid(Patterns.ARTIST_AVATAR, path);
                 try{
-                    artistController.patchArtistAvatar(uuid, request.getPart("avatar").getInputStream());
+                    try(InputStream is = request.getPart("avatar").getInputStream()) {
+                        artistController.patchArtistAvatar(uuid, is);
+                    }
                     response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                }catch (NotFoundException ex){
+                }catch (NotFoundException | AvatarDoesNotExistException ex){
                     response.sendError(HttpServletResponse.SC_NOT_FOUND, ex.getMessage());
                 }
                 return;

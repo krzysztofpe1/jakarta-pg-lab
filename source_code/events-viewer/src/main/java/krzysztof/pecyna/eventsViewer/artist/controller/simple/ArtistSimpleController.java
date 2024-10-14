@@ -1,6 +1,7 @@
 package krzysztof.pecyna.eventsViewer.artist.controller.simple;
 
 import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.NotFoundException;
 import krzysztof.pecyna.eventsViewer.artist.controller.api.ArtistController;
 import krzysztof.pecyna.eventsViewer.artist.dto.GetArtistResponse;
@@ -9,6 +10,8 @@ import krzysztof.pecyna.eventsViewer.artist.dto.PatchArtistRequest;
 import krzysztof.pecyna.eventsViewer.artist.dto.PutArtistRequest;
 import krzysztof.pecyna.eventsViewer.artist.service.ArtistService;
 import krzysztof.pecyna.eventsViewer.component.DtoFunctionsFactory;
+import krzysztof.pecyna.eventsViewer.component.exception.AvatarDoesNotExistException;
+import krzysztof.pecyna.eventsViewer.component.exception.AvatarExistsException;
 
 import java.io.InputStream;
 import java.util.UUID;
@@ -67,17 +70,17 @@ public class ArtistSimpleController implements ArtistController {
     }
 
     @Override
-    public void putArtistAvatar(UUID id, InputStream avatarData) {
+    public void putArtistAvatar(UUID id, InputStream avatarData) throws AvatarExistsException {
         artistService.createAvatar(id, avatarData);
     }
 
     @Override
-    public void deleteArtistAvatar(UUID id) {
+    public void deleteArtistAvatar(UUID id) throws AvatarDoesNotExistException {
         artistService.deleteAvatar(id);
     }
 
     @Override
-    public void patchArtistAvatar(UUID id, InputStream avatarData) {
+    public void patchArtistAvatar(UUID id, InputStream avatarData) throws AvatarDoesNotExistException {
         artistService.updateAvatar(id, avatarData);
     }
 }

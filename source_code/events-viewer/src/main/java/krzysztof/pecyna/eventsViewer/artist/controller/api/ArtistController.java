@@ -4,6 +4,8 @@ import krzysztof.pecyna.eventsViewer.artist.dto.GetArtistResponse;
 import krzysztof.pecyna.eventsViewer.artist.dto.GetArtistsResponse;
 import krzysztof.pecyna.eventsViewer.artist.dto.PatchArtistRequest;
 import krzysztof.pecyna.eventsViewer.artist.dto.PutArtistRequest;
+import krzysztof.pecyna.eventsViewer.component.exception.AvatarDoesNotExistException;
+import krzysztof.pecyna.eventsViewer.component.exception.AvatarExistsException;
 
 import java.io.InputStream;
 import java.util.UUID;
@@ -22,10 +24,10 @@ public interface ArtistController {
 
     byte[] getArtistAvatar(UUID id);
 
-    void putArtistAvatar(UUID id, InputStream data);
+    void putArtistAvatar(UUID id, InputStream data) throws AvatarExistsException;
 
-    void deleteArtistAvatar(UUID id);
+    void deleteArtistAvatar(UUID id) throws AvatarDoesNotExistException;
 
-    void patchArtistAvatar(UUID id, InputStream data);
+    void patchArtistAvatar(UUID id, InputStream data) throws AvatarDoesNotExistException;
 
 }

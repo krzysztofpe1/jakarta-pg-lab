@@ -1,6 +1,8 @@
 package krzysztof.pecyna.eventsViewer.component;
 
 import jakarta.ws.rs.NotFoundException;
+import krzysztof.pecyna.eventsViewer.component.exception.AvatarDoesNotExistException;
+import krzysztof.pecyna.eventsViewer.component.exception.AvatarExistsException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,13 +14,22 @@ import java.util.UUID;
 
 public class AvatarService {
 
-    private static final String avatarsDirectoryPath = "avatars";
+    private final String avatarsDirectoryPath;
 
-    public void createAvatar(UUID artistId, InputStream is){
+    public AvatarService(String avatarsDirectoryPath) throws IOException {
+        //ensure avatars dir is created
+        this.avatarsDirectoryPath = avatarsDirectoryPath;
+        Path avatarsDirPath = Path.of(avatarsDirectoryPath);
+
+        if(!Files.exists(avatarsDirPath))
+            Files.createDirectory(avatarsDirPath);
+    }
+
+    public void createAvatar(UUID artistId, InputStream is) throws AvatarExistsException{
         try{
             Path pathToAvatar = getAvatarURI(artistId);
             if(Files.exists(pathToAvatar))
-                throw new IllegalArgumentException("Avatar already exists");
+                throw new AvatarExistsException("Avatar already exists");
 
             Files.copy(is, pathToAvatar, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ex) {
@@ -26,11 +37,11 @@ public class AvatarService {
         }
     }
 
-    public void updateAvatar(UUID artistId, InputStream is){
+    public void updateAvatar(UUID artistId, InputStream is) throws AvatarDoesNotExistException {
         try{
             Path pathToAvatar = getAvatarURI(artistId);
             if(!Files.exists(pathToAvatar))
-                throw new IllegalArgumentException("Avatar does not exist");
+                throw new AvatarDoesNotExistException("Avatar does not exist");
 
             Files.copy(is, pathToAvatar, StandardCopyOption.REPLACE_EXISTING);
         }
@@ -39,11 +50,11 @@ public class AvatarService {
         }
     }
 
-    public void deleteAvatar(UUID artistId){
+    public void deleteAvatar(UUID artistId) throws AvatarDoesNotExistException {
         try {
             Path pathToAvatar = getAvatarURI(artistId);
             if(!Files.exists(pathToAvatar))
-                throw new IllegalArgumentException("Avatar does not exist");
+                throw new AvatarDoesNotExistException("Avatar does not exist");
 
             Files.delete(pathToAvatar);
         }

@@ -4,6 +4,8 @@ import jakarta.ws.rs.NotFoundException;
 import krzysztof.pecyna.eventsViewer.artist.entity.Artist;
 import krzysztof.pecyna.eventsViewer.artist.repository.api.ArtistRepository;
 import krzysztof.pecyna.eventsViewer.component.AvatarService;
+import krzysztof.pecyna.eventsViewer.component.exception.AvatarDoesNotExistException;
+import krzysztof.pecyna.eventsViewer.component.exception.AvatarExistsException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,26 +62,24 @@ public class ArtistService {
         return avatarService.getAvatar(id);
     }
 
-    public void createAvatar(UUID id, InputStream is) {
-        artistRepository.find(id).ifPresentOrElse(
-                artist -> {avatarService.createAvatar(id, is);},
-                () -> { throw new NotFoundException("Artist not found");
-                }
-        );
+    public void createAvatar(UUID id, InputStream is) throws AvatarExistsException {
+        if(artistRepository.find(id).isEmpty())
+            throw new NotFoundException("Artist not found");
+
+        avatarService.createAvatar(id,is);
     }
 
-    public void updateAvatar(UUID id, InputStream is) {
-        artistRepository.find(id).ifPresentOrElse(
-                artist -> {avatarService.updateAvatar(id,is);},
-                () -> { throw new NotFoundException("Artist not found");}
-        );
+    public void updateAvatar(UUID id, InputStream is) throws AvatarDoesNotExistException {
+        if(artistRepository.find(id).isEmpty())
+            throw new NotFoundException("Artist not found");
+        avatarService.updateAvatar(id,is);
     }
 
-    public void deleteAvatar(UUID id){
-        artistRepository.find(id).ifPresentOrElse(
-                artist -> {avatarService.deleteAvatar(id);},
-                () -> { throw new NotFoundException("Artist not found");}
-        );
+    public void deleteAvatar(UUID id) throws AvatarDoesNotExistException {
+        if(artistRepository.find(id).isEmpty())
+            throw new NotFoundException("Artist not found");
+
+        avatarService.deleteAvatar(id);
     }
 
 }
