@@ -1,7 +1,6 @@
 package krzysztof.pecyna.eventsViewer.artist.controller.simple;
 
 import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.NotFoundException;
 import krzysztof.pecyna.eventsViewer.artist.controller.api.ArtistController;
 import krzysztof.pecyna.eventsViewer.artist.dto.GetArtistResponse;
@@ -9,7 +8,7 @@ import krzysztof.pecyna.eventsViewer.artist.dto.GetArtistsResponse;
 import krzysztof.pecyna.eventsViewer.artist.dto.PatchArtistRequest;
 import krzysztof.pecyna.eventsViewer.artist.dto.PutArtistRequest;
 import krzysztof.pecyna.eventsViewer.artist.service.ArtistService;
-import krzysztof.pecyna.eventsViewer.component.DtoFunctionsFactory;
+import krzysztof.pecyna.eventsViewer.component.DtoFunctionFactory;
 import krzysztof.pecyna.eventsViewer.component.exception.AvatarDoesNotExistException;
 import krzysztof.pecyna.eventsViewer.component.exception.AvatarExistsException;
 
@@ -19,9 +18,9 @@ import java.util.UUID;
 public class ArtistSimpleController implements ArtistController {
 
     private final ArtistService artistService;
-    private final DtoFunctionsFactory factory;
+    private final DtoFunctionFactory factory;
 
-    public ArtistSimpleController(ArtistService artistService, DtoFunctionsFactory factory) {
+    public ArtistSimpleController(ArtistService artistService, DtoFunctionFactory factory) {
         this.artistService = artistService;
         this.factory = factory;
     }
@@ -40,10 +39,9 @@ public class ArtistSimpleController implements ArtistController {
 
     @Override
     public void putArtist(UUID id, PutArtistRequest data) {
-        try{
-            artistService.create(factory.requestToArtist().apply(id,data));
-        }
-        catch (IllegalArgumentException ex){
+        try {
+            artistService.create(factory.requestToArtist().apply(id, data));
+        } catch (IllegalArgumentException ex) {
             throw new BadRequestException(ex);
         }
     }
@@ -52,15 +50,21 @@ public class ArtistSimpleController implements ArtistController {
     public void patchArtist(UUID id, PatchArtistRequest data) {
         artistService.find(id).ifPresentOrElse(
                 entity -> artistService.update(factory.updateArtist().apply(entity, data)),
-                () -> {throw  new NotFoundException();}
+                () -> {
+                    throw new NotFoundException();
+                }
         );
     }
 
     @Override
     public void deleteArtist(UUID id) {
         artistService.find(id).ifPresentOrElse(
-                entity-> {artistService.delete(entity);},
-                () -> {throw  new NotFoundException();}
+                entity -> {
+                    artistService.delete(entity);
+                },
+                () -> {
+                    throw new NotFoundException();
+                }
         );
     }
 

@@ -7,7 +7,7 @@ import krzysztof.pecyna.eventsViewer.artist.service.ArtistService;
 import krzysztof.pecyna.eventsViewer.location.entity.Location;
 import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
 import krzysztof.pecyna.eventsViewer.performance.repository.api.PerformanceRepository;
-
+import krzysztof.pecyna.eventsViewer.controller.servlet.exception.NotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

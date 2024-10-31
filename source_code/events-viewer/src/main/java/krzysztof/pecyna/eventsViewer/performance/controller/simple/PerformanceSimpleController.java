@@ -2,14 +2,23 @@ package krzysztof.pecyna.eventsViewer.performance.controller.simple;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import krzysztof.pecyna.eventsViewer.component.DtoFunctionFactory;
+import krzysztof.pecyna.eventsViewer.controller.servlet.exception.AlreadyExistsException;
 import krzysztof.pecyna.eventsViewer.performance.controller.api.PerformanceController;
+import krzysztof.pecyna.eventsViewer.performance.dto.GetPerformanceResponse;
+import krzysztof.pecyna.eventsViewer.performance.dto.GetPerformancesResponse;
+import krzysztof.pecyna.eventsViewer.performance.dto.PatchPerformanceRequest;
+import krzysztof.pecyna.eventsViewer.performance.dto.PutPerformanceRequest;
+import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
+import krzysztof.pecyna.eventsViewer.performance.service.PerformanceService;
+import krzysztof.pecyna.eventsViewer.controller.servlet.exception.NotFoundException;
 
 import java.util.UUID;
 
 @RequestScoped
 public class PerformanceSimpleController implements PerformanceController {
 
-    private final  PerformanceService performanceService;
+    private final PerformanceService performanceService;
 
     private final DtoFunctionFactory factory;
 
@@ -21,9 +30,9 @@ public class PerformanceSimpleController implements PerformanceController {
     }
 
     @Override
-    public GetPerformanceServicesResponse getArtistPerformances(UUID id) {
-        return PerformanceService.findAllByUser(id)
-                .map(factory.PerformancesToResponse())
+    public GetPerformancesResponse getArtistPerformances(UUID id) {
+        return performanceService.findAllByArtist(id)
+                .map(factory.performancesToResponse())
                 .orElseThrow(() -> new NotFoundException("Artist not found"));
     }
 
@@ -36,7 +45,7 @@ public class PerformanceSimpleController implements PerformanceController {
 
     @Override
     public GetPerformancesResponse getPerformances() {
-        return factory.erformancesToResponse().apply(performanceService.findAll());
+        return factory.performancesToResponse().apply(performanceService.findAll());
     }
 
     @Override

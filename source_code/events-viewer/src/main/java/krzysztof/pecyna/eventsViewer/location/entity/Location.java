@@ -22,5 +22,7 @@ public class Location implements Serializable {
 
     private Integer maximumAudienceCapacity;
 
+    private LocationType locationType;
+
     private List<Performance> performances;
 }
