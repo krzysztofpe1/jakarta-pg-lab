@@ -1,6 +1,6 @@
 package krzysztof.pecyna.eventsViewer.location.entity;
 
-import krzysztof.pecyna.eventsViewer.event.entity.Event;
+import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -16,19 +16,11 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode
 public class Location implements Serializable {
-
     private UUID id;
-
-    private String country;
-
-    private String state;
-
-    private String city;
 
     private String streetAddress;
 
-    private List<Event> events;
+    private Integer maximumAudienceCapacity;
 
-    private int maximumAudienceCapacity;
-
+    private List<Performance> performances;
 }

@@ -24,8 +24,5 @@ public class Artist implements Serializable {
 
     private String lastName;
 
-    private String nickName;
-
-    private List<Performance> performanceList;
-
+    private List<Performance> performances;
 }
