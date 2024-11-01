@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/template/main.xhtml">
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{locationView.id}" required="true"/>
+        <f:viewAction action="#{locationView.init()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <header>
+            <h2>
+                <h:outputText value="#{locationView.location.name}"/>
+            </h2>
+        </header>
+        <main>
+            <div>
+                Location type:
+                <h:outputText value="#{locationView.location.locationType}"/>
+            </div>
+            <div>Performances:</div>
+            <ui:repeat layout="unorderedList" value="#{locationView.location.performances}" var="performance">
+                <li style="display: flex">
+                    <h:link outcome="/performance/performance_view.xhtml">
+                        <h:outputText value="#{performance.name}"/>
+                        <f:param name="id" value="#{performance.id}"/>
+                    </h:link>
+                    <h:form>
+                        <h:commandButton class="button" value="Delete performance" action="#{locationView.deletePerformance(performance.id)}"/>
+                    </h:form>
+                </li>
+            </ui:repeat>
+        </main>
+    </ui:define>
+</ui:composition>

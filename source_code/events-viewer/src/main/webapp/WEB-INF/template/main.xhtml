@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core">
+<f:view>
+    <h:head>
+        <meta charset="UTF-8"/>
+        <meta name="description" content="Events viewer"/>
+        <meta name="author" content="Krzysztof Pecyna"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Heroes</title>
+        <h:outputStylesheet library="css" name="index.css"/>
+    </h:head>
+    <h:body>
+        <header>
+            <h1 class="main-header">Event viewer page</h1>
+        </header>
+
+        <nav class="nav">
+            <div class="logo-container">
+                <h:graphicImage name="img/logo.png" alt="Logo"/>
+            </div>
+            <ul class="nav-list">
+                <li>
+                    <h:link outcome="/index.xhtml">Home</h:link>
+                </li>
+                <li>
+                    <h:link outcome="/location/location_list.xhtml">Locations</h:link>
+                </li>
+                <li>
+                    <h:link outcome="/performance/performance_create.xhtml">Create new performance</h:link>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="main">
+            <ui:insert name="content"/>
+        </main>
+
+        <footer class="footer">
+                Copyright &#169; 2024 Krzysztof Pecyna
+        </footer>
+    </h:body>
+</f:view>
+</html>

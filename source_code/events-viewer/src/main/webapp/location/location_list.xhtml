@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/template/main.xhtml">
+
+    <ui:define name="content">
+        <article class="text--justified">
+            <header><h2>Locations:</h2></header>
+            <h:dataTable value="#{locationList.locations.locations}" var="location">
+                <h:column>
+                    <h:link outcome="/location/location_view.xhtml">
+                        <h:outputText value="#{location.name}"/>
+                        <f:param name="id" value="#{location.id}"/>
+                    </h:link>
+                </h:column>
+                <h:column>
+                    <h:form>
+                        <h:commandButton class="button" value="Delete"
+                                         action="#{locationList.deleteAction(location)}"/>
+                    </h:form>
+                </h:column>
+            </h:dataTable>
+        </article>
+    </ui:define>
+</ui:composition>
