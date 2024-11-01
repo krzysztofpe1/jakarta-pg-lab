@@ -11,7 +11,7 @@ public class UpdatePerformanceWithRequestFunction implements BiFunction<Performa
     public Performance apply(Performance performance, PatchPerformanceRequest request) {
         return Performance.builder()
                 .id(performance.getId())
-                .duration(request.getDuration())
+                .date(request.getDate())
                 .performanceType(request.getPerformanceType())
                 .artist(performance.getArtist())
                 .location(performance.getLocation())

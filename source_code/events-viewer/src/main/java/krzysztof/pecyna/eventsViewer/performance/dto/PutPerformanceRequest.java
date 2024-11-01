@@ -1,9 +1,9 @@
 package krzysztof.pecyna.eventsViewer.performance.dto;
 
-import jdk.jfr.Timespan;
 import krzysztof.pecyna.eventsViewer.performance.entity.PerformanceType;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Getter
@@ -14,7 +14,7 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode
 public class PutPerformanceRequest {
-    private Timespan duration;
+    private LocalDate date;
 
     private PerformanceType performanceType;
 

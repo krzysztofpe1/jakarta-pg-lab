@@ -1,9 +1,9 @@
 package krzysztof.pecyna.eventsViewer.location.dto;
 
-import jdk.jfr.Timespan;
 import krzysztof.pecyna.eventsViewer.location.entity.LocationType;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +34,7 @@ public class GetLocationResponse {
     public static class Performance {
         private UUID id;
 
-        private Timespan duration;
+        private LocalDate date;
     }
 
     @Singular

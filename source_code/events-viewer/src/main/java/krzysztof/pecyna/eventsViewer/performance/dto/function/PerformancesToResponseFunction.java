@@ -14,7 +14,7 @@ public class PerformancesToResponseFunction implements Function<List<Performance
                 .performances(performances.stream()
                         .map(performance -> GetPerformancesResponse.Performance.builder()
                                 .id(performance.getId())
-                                .duration(performance.getDuration())
+                                .date(performance.getDate())
                                 .performanceType(performance.getPerformanceType())
                                 .build())
                         .toList())

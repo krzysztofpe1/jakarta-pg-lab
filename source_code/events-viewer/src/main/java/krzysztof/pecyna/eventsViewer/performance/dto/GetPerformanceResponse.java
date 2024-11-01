@@ -1,9 +1,9 @@
 package krzysztof.pecyna.eventsViewer.performance.dto;
 
-import jdk.jfr.Timespan;
 import krzysztof.pecyna.eventsViewer.performance.entity.PerformanceType;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Getter
@@ -40,7 +40,7 @@ public class GetPerformanceResponse {
 
     private UUID id;
 
-    private Timespan duration;
+    private LocalDate date;
 
     private PerformanceType performanceType;
 

@@ -1,12 +1,12 @@
 package krzysztof.pecyna.eventsViewer.performance.entity;
 
-import jdk.jfr.Timespan;
 import krzysztof.pecyna.eventsViewer.artist.entity.Artist;
 import krzysztof.pecyna.eventsViewer.location.entity.Location;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Getter
@@ -19,7 +19,7 @@ import java.util.UUID;
 public class Performance implements Serializable {
     private UUID id;
 
-    private Timespan duration;
+    private LocalDate date;
 
     private PerformanceType performanceType;
 

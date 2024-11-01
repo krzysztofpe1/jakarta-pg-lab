@@ -11,7 +11,7 @@ public class PerformanceToResponseFunction implements Function<Performance, GetP
     public GetPerformanceResponse apply(Performance performance) {
         return GetPerformanceResponse.builder()
                 .id(performance.getId())
-                .duration(performance.getDuration())
+                .date(performance.getDate())
                 .performanceType(performance.getPerformanceType())
                 .artist(GetPerformanceResponse.Artist.builder()
                         .id(performance.getArtist().getId())

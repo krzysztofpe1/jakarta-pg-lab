@@ -14,7 +14,7 @@ public class RequestToPerformanceFunction implements BiFunction<UUID, PutPerform
     public Performance apply(UUID uuid, PutPerformanceRequest request) {
         return Performance.builder()
                 .id(uuid)
-                .duration(request.getDuration())
+                .date(request.getDate())
                 .performanceType(request.getPerformanceType())
                 .artist(Artist.builder().id(request.getArtist()).build())
                 .location(Location.builder().id(request.getLocation()).build())

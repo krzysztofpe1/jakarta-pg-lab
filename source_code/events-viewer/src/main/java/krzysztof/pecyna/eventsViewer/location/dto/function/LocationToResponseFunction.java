@@ -17,7 +17,7 @@ public class LocationToResponseFunction implements Function<Location, GetLocatio
                 .performances(location.getPerformances().stream()
                         .map(performance -> GetLocationResponse.Performance.builder()
                                 .id(performance.getId())
-                                .duration(performance.getDuration())
+                                .date(performance.getDate())
                                 .build())
                         .toList())
                 .build();
