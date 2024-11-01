@@ -4,8 +4,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import krzysztof.pecyna.eventsViewer.artist.entity.Artist;
 import krzysztof.pecyna.eventsViewer.artist.repository.api.ArtistRepository;
-import krzysztof.pecyna.eventsViewer.dataStone.component.DataStore;
-
+import krzysztof.pecyna.eventsViewer.dataStore.DataStore;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

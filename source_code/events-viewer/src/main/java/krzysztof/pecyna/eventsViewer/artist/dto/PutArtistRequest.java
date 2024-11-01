@@ -9,7 +9,6 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
-
 public class PutArtistRequest {
     private String firstName;
 

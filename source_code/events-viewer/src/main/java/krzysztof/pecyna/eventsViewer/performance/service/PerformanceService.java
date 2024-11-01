@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import krzysztof.pecyna.eventsViewer.artist.entity.Artist;
 import krzysztof.pecyna.eventsViewer.artist.service.ArtistService;
 import krzysztof.pecyna.eventsViewer.location.entity.Location;
+import krzysztof.pecyna.eventsViewer.location.service.LocationService;
 import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
 import krzysztof.pecyna.eventsViewer.performance.repository.api.PerformanceRepository;
 import krzysztof.pecyna.eventsViewer.controller.servlet.exception.NotFoundException;

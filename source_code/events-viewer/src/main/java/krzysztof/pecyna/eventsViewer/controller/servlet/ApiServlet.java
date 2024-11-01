@@ -10,10 +10,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import krzysztof.pecyna.eventsViewer.artist.controller.api.ArtistController;
+import krzysztof.pecyna.eventsViewer.artist.dto.PutArtistRequest;
+import krzysztof.pecyna.eventsViewer.controller.servlet.exception.AlreadyExistsException;
 import krzysztof.pecyna.eventsViewer.location.controller.api.LocationController;
+import krzysztof.pecyna.eventsViewer.location.dto.PatchLocationRequest;
+import krzysztof.pecyna.eventsViewer.location.dto.PutLocationRequest;
 import krzysztof.pecyna.eventsViewer.performance.controller.api.PerformanceController;
 import krzysztof.pecyna.eventsViewer.controller.servlet.exception.NotFoundException;
-
+import krzysztof.pecyna.eventsViewer.performance.dto.PatchPerformanceRequest;
+import krzysztof.pecyna.eventsViewer.performance.dto.PutPerformanceRequest;
+import krzysztof.pecyna.eventsViewer.artist.dto.PatchArtistRequest;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.regex.Matcher;

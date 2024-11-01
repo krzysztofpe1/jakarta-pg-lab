@@ -10,7 +10,6 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
-
 public class PutLocationRequest {
     private String streetAddress;
 

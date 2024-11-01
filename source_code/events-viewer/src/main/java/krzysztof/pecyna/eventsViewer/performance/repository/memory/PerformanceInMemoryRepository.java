@@ -2,7 +2,9 @@ package krzysztof.pecyna.eventsViewer.performance.repository.memory;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import krzysztof.pecyna.eventsViewer.artist.entity.Artist;
 import krzysztof.pecyna.eventsViewer.dataStore.DataStore;
+import krzysztof.pecyna.eventsViewer.location.entity.Location;
 import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
 import krzysztof.pecyna.eventsViewer.performance.repository.api.PerformanceRepository;
 

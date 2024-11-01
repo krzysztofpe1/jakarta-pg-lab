@@ -3,9 +3,14 @@ package krzysztof.pecyna.eventsViewer.location.controller.simple;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import krzysztof.pecyna.eventsViewer.component.DtoFunctionFactory;
+import krzysztof.pecyna.eventsViewer.controller.servlet.exception.AlreadyExistsException;
 import krzysztof.pecyna.eventsViewer.location.controller.api.LocationController;
 import krzysztof.pecyna.eventsViewer.controller.servlet.exception.NotFoundException;
+import krzysztof.pecyna.eventsViewer.location.dto.GetLocationResponse;
+import krzysztof.pecyna.eventsViewer.location.dto.GetLocationsResponse;
 import krzysztof.pecyna.eventsViewer.location.service.LocationService;
+import krzysztof.pecyna.eventsViewer.location.dto.PutLocationRequest;
+import krzysztof.pecyna.eventsViewer.location.dto.PatchLocationRequest;
 
 import java.util.UUID;
 
