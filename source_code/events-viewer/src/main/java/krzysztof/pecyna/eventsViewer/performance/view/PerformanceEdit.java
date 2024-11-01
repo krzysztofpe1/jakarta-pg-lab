@@ -5,14 +5,14 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletResponse;
+import krzysztof.pecyna.eventsViewer.component.ModelFunctionFactory;
+import krzysztof.pecyna.eventsViewer.location.model.LocationModel;
+import krzysztof.pecyna.eventsViewer.location.service.LocationService;
+import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
+import krzysztof.pecyna.eventsViewer.performance.model.PerformanceEditModel;
+import krzysztof.pecyna.eventsViewer.performance.service.PerformanceService;
 import lombok.Getter;
 import lombok.Setter;
-import stenka.marcin.heroes.component.ModelFunctionFactory;
-import stenka.marcin.heroes.fraction.model.FractionModel;
-import stenka.marcin.heroes.fraction.service.FractionService;
-import stenka.marcin.heroes.unit.entity.Unit;
-import stenka.marcin.heroes.unit.model.UnitEditModel;
-import stenka.marcin.heroes.unit.service.UnitService;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -24,50 +24,50 @@ import java.util.UUID;
 @Named
 public class PerformanceEdit implements Serializable {
 
-    private final UnitService unitService;
+    private final PerformanceService performanceService;
 
     private final ModelFunctionFactory factory;
 
-    private final FractionService fractionService;
+    private final LocationService locationService;
 
     @Setter
     @Getter
     private UUID id;
 
     @Getter
-    private UnitEditModel unit;
+    private PerformanceEditModel performance;
 
     @Setter
     @Getter
-    private UUID initialFraction;
+    private UUID initialLocation;
 
     @Setter
     @Getter
-    private List<FractionModel> fractions;
+    private List<LocationModel> locations;
 
     @Inject
-    public PerformanceEdit(UnitService unitService, ModelFunctionFactory factory, FractionService fractionService) {
-        this.unitService = unitService;
+    public PerformanceEdit(PerformanceService performanceService, ModelFunctionFactory factory, LocationService locationService) {
+        this.performanceService = performanceService;
         this.factory = factory;
-        this.fractionService = fractionService;
+        this.locationService = locationService;
     }
 
     public void init() throws IOException {
-        Optional<Unit> unit = unitService.find(id);
-        if (unit.isPresent()) {
-            this.unit = factory.unitToEditModel().apply(unit.get());
-            this.initialFraction = this.unit.getFraction().getId();
-            this.fractions = fractionService.findAll().stream().map(factory.fractionToModel()).toList();
+        Optional<Performance> performance = performanceService.find(id);
+        if (performance.isPresent()) {
+            this.performance = factory.performanceToEditModel().apply(performance.get());
+            this.initialLocation = this.performance.getLocation().getId();
+            this.locations = locationService.findAll().stream().map(factory.locationToModel()).toList();
         } else {
-            FacesContext.getCurrentInstance().getExternalContext().responseSendError(HttpServletResponse.SC_NOT_FOUND, "Unit not found!!!");
+            FacesContext.getCurrentInstance().getExternalContext().responseSendError(HttpServletResponse.SC_NOT_FOUND, "Performance not found!!!");
         }
     }
 
     public String saveAction() {
-        if (unit.getFraction() == null || unit.getName() == null) {
+        if (performance.getLocation() == null || performance.getDate() == null) {
             return null;
         }
-        unitService.update(factory.updateUnit().apply(unitService.find(id).orElseThrow(), unit), initialFraction);
+        performanceService.update(factory.updatePerformance().apply(performanceService.find(id).orElseThrow(), performance), initialLocation);
         String viewId = FacesContext.getCurrentInstance().getViewRoot().getViewId();
         return viewId + "?faces-redirect=true&includeViewParams=true";
     }

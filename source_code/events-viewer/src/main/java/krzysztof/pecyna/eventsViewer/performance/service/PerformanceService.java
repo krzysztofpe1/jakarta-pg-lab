@@ -44,7 +44,9 @@ public class PerformanceService {
     }
 
     public void create(Performance performance, UUID artistId, UUID locationId) {
+
         Artist artist = artistService.find(artistId).orElseThrow(() -> new NotFoundException("Artist not found: " + artistId));
+
         Location location = locationService.find(locationId).orElseThrow(() -> new NotFoundException("Location not found: " + locationId));
 
         performanceRepository.create(performance);
@@ -60,7 +62,33 @@ public class PerformanceService {
         locationService.update(location);
     }
 
-    public void update(Performance performance) {
+    public void update(Performance performance, UUID initialLocation) {
+        Artist artist = artistService.find(performance.getArtist().getId())
+                .orElseThrow(() -> new NotFoundException("Artist not found: " + performance.getArtist().getId()));
+
+        Location newLocation = locationService.find(performance.getLocation().getId())
+                .orElseThrow(() -> new NotFoundException("Location not found: " + performance.getLocation().getId()));
+
+        if (!initialLocation.equals(newLocation.getId())) {
+            Location oldLocation = locationService.find(initialLocation)
+                    .orElseThrow(() -> new NotFoundException("Initial location not found: " + initialLocation));
+
+            oldLocation.getPerformances().removeIf(oldLocationPerformance -> oldLocationPerformance.getId().equals(performance.getId()));
+            locationService.update(oldLocation);
+        }
+
+        boolean artistPerformanceUpdated = artist.getPerformances().removeIf(artistPerformance -> artistPerformance.getId().equals(performance.getId()));
+        if (artistPerformanceUpdated) {
+            artist.getPerformances().add(performance);
+        } else {
+            throw new NotFoundException("Performance not found in artist's performances: " + performance.getId());
+        }
+
+        newLocation.getPerformances().removeIf(locationPerformance -> locationPerformance.getId().equals(performance.getId()));
+        newLocation.getPerformances().add(performance);
+
+        artistService.update(artist);
+        locationService.update(newLocation);
         performanceRepository.update(performance);
     }
 

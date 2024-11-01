@@ -5,12 +5,12 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletResponse;
+import krzysztof.pecyna.eventsViewer.component.ModelFunctionFactory;
+import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
+import krzysztof.pecyna.eventsViewer.performance.model.PerformanceModel;
+import krzysztof.pecyna.eventsViewer.performance.service.PerformanceService;
 import lombok.Getter;
 import lombok.Setter;
-import stenka.marcin.heroes.component.ModelFunctionFactory;
-import stenka.marcin.heroes.unit.entity.Unit;
-import stenka.marcin.heroes.unit.model.UnitModel;
-import stenka.marcin.heroes.unit.service.UnitService;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -20,7 +20,7 @@ import java.util.UUID;
 @ViewScoped
 @Named
 public class PerformanceView implements Serializable {
-    private final UnitService unitService;
+    private final PerformanceService performanceService;
 
     private final ModelFunctionFactory factory;
 
@@ -29,20 +29,20 @@ public class PerformanceView implements Serializable {
     private UUID id;
 
     @Getter
-    private UnitModel unit;
+    private PerformanceModel performance;
 
     @Inject
-    public PerformanceView(UnitService unitService, ModelFunctionFactory factory) {
-        this.unitService = unitService;
+    public PerformanceView(PerformanceService performanceService, ModelFunctionFactory factory) {
+        this.performanceService = performanceService;
         this.factory = factory;
     }
 
     public void init() throws IOException {
-        Optional<Unit> unit = unitService.find(id);
-        if (unit.isPresent()) {
-            this.unit = factory.unitToModel().apply(unit.get());
+        Optional<Performance> performance = performanceService.find(id);
+        if (performance.isPresent()) {
+            this.performance = factory.performanceToModel().apply(performance.get());
         } else {
-            FacesContext.getCurrentInstance().getExternalContext().responseSendError(HttpServletResponse.SC_NOT_FOUND, "Unit not found!!!");
+            FacesContext.getCurrentInstance().getExternalContext().responseSendError(HttpServletResponse.SC_NOT_FOUND, "Performance not found!!!");
         }
     }
 

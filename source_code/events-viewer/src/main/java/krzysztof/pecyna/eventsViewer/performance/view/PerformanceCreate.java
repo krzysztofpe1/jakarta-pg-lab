@@ -3,8 +3,12 @@ package krzysztof.pecyna.eventsViewer.performance.view;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import krzysztof.pecyna.eventsViewer.artist.entity.Artist;
 import krzysztof.pecyna.eventsViewer.artist.service.ArtistService;
+import krzysztof.pecyna.eventsViewer.component.ModelFunctionFactory;
+import krzysztof.pecyna.eventsViewer.location.model.LocationModel;
 import krzysztof.pecyna.eventsViewer.location.service.LocationService;
+import krzysztof.pecyna.eventsViewer.performance.model.PerformanceCreateModel;
 import krzysztof.pecyna.eventsViewer.performance.service.PerformanceService;
 import lombok.Getter;
 import lombok.Setter;
@@ -55,7 +59,7 @@ public class PerformanceCreate implements Serializable {
     }
 
     public String saveAction() {
-        if (performance.getLocation() == null || performance.getName() == null) {
+        if (performance.getLocation() == null || performance.getDate() == null) {
             return null;
         }
         performanceService.create(factory.modelToPerformance().apply(performance), TEMP_ARTIST_ID, performance.getLocation().getId());
