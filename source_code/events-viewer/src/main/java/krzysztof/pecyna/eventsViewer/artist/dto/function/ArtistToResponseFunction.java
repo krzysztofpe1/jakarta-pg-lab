@@ -13,7 +13,12 @@ public class ArtistToResponseFunction implements Function<Artist, GetArtistRespo
                 .id(artist.getId())
                 .firstName(artist.getFirstName())
                 .lastName(artist.getLastName())
-                .nickName(artist.getNickName())
+                .performances(artist.getPerformances().stream()
+                        .map(performance -> GetArtistResponse.Performance.builder()
+                                .id(performance.getId())
+                                .date(performance.getDate())
+                                .build())
+                        .toList())
                 .build();
     }
 }

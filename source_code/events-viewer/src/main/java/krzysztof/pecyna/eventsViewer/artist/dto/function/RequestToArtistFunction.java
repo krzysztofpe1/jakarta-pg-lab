@@ -3,6 +3,7 @@ package krzysztof.pecyna.eventsViewer.artist.dto.function;
 import krzysztof.pecyna.eventsViewer.artist.dto.PutArtistRequest;
 import krzysztof.pecyna.eventsViewer.artist.entity.Artist;
 
+import java.util.Collections;
 import java.util.UUID;
 import java.util.function.BiFunction;
 
@@ -13,7 +14,7 @@ public class RequestToArtistFunction implements BiFunction<UUID, PutArtistReques
                 .id(id)
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
-                .nickName(request.getNickName())
+                .performances((Collections.emptyList()))
                 .build();
     }
 }

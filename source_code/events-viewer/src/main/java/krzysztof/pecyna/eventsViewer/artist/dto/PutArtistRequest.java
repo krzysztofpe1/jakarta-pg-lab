@@ -11,10 +11,7 @@ import lombok.*;
 @EqualsAndHashCode
 
 public class PutArtistRequest {
-
     private String firstName;
 
     private String lastName;
-
-    private String nickName;
 }

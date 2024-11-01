@@ -22,16 +22,11 @@ public class GetArtistsResponse {
     @ToString
     @EqualsAndHashCode
     public static class Artist {
-
         private UUID id;
 
-        private String firstName;
-
         private String lastName;
-
-        private String nickName;
-
     }
 
+    @Singular
     private List<Artist> artists;
 }

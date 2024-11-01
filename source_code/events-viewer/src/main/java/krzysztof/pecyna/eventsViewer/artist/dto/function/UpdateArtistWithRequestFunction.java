@@ -10,9 +10,9 @@ public class UpdateArtistWithRequestFunction implements BiFunction<Artist, Patch
     public Artist apply(Artist artist, PatchArtistRequest request) {
         return Artist.builder()
                 .id(artist.getId())
-                .firstName((request.getFirstName() != null)? request.getFirstName() : artist.getFirstName())
-                .lastName((request.getLastName() != null)? request.getLastName() : artist.getLastName())
-                .nickName((request.getNickName() != null)? request.getNickName() : artist.getNickName())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .performances(artist.getPerformances())
                 .build();
     }
 }

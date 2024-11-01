@@ -11,11 +11,7 @@ import lombok.*;
 @EqualsAndHashCode
 
 public class PatchArtistRequest {
-
     private String firstName;
 
     private String lastName;
-
-    private String nickName;
-
 }

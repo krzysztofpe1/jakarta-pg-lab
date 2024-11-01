@@ -3,6 +3,7 @@ package krzysztof.pecyna.eventsViewer.location.service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import krzysztof.pecyna.eventsViewer.location.entity.Location;
+import krzysztof.pecyna.eventsViewer.location.repository.api.LocationRepository;
 import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
 import krzysztof.pecyna.eventsViewer.performance.service.PerformanceService;
 import krzysztof.pecyna.eventsViewer.controller.servlet.exception.NotFoundException;

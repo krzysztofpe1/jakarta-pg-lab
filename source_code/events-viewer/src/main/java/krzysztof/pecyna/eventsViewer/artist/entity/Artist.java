@@ -17,7 +17,6 @@ import java.util.UUID;
 @EqualsAndHashCode
 
 public class Artist implements Serializable {
-
     private UUID id;
 
     private String firstName;

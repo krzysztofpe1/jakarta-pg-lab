@@ -1,5 +1,7 @@
 package krzysztof.pecyna.eventsViewer.artist.repository.memory;
 
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 import krzysztof.pecyna.eventsViewer.artist.entity.Artist;
 import krzysztof.pecyna.eventsViewer.artist.repository.api.ArtistRepository;
 import krzysztof.pecyna.eventsViewer.dataStone.component.DataStore;
@@ -8,33 +10,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@RequestScoped
 public class ArtistInMemoryRepository implements ArtistRepository {
 
     private final DataStore store;
 
+    @Inject
     public ArtistInMemoryRepository(DataStore store) {
         this.store = store;
     }
 
     @Override
-    public List<Artist> findByFirstName(String firstName) {
-        return  store.findAllArtists().stream().filter(artist -> artist.getFirstName().equals(firstName)).toList();
-    }
-
-    @Override
-    public List<Artist> findByLastName(String lastName) {
-        return store.findAllArtists().stream().filter(artist -> artist.getLastName().equals(lastName)).toList();
-    }
-
-    @Override
-    public List<Artist> findByNickName(String nickName) {
-        return store.findAllArtists().stream().filter(artist -> artist.getNickName().equals(nickName)).toList();
-    }
-
-    @Override
     public Optional<Artist> find(UUID id) {
         return store.findAllArtists().stream()
-                .filter(artist -> artist.getId().equals(id)).findFirst();
+                .filter(artist -> artist.getId().equals(id))
+                .findFirst();
     }
 
     @Override
@@ -48,12 +38,19 @@ public class ArtistInMemoryRepository implements ArtistRepository {
     }
 
     @Override
+    public void delete(Artist entity) {
+        store.deleteArtist(entity.getId());
+    }
+
+    @Override
     public void update(Artist entity) {
         store.updateArtist(entity);
     }
 
     @Override
-    public void delete(Artist entity) {
-        store.deleteArtist(entity.getId());
+    public Optional<Artist> findByName(String name) {
+        return store.findAllArtists().stream()
+                .filter(artist -> artist.getLastName().equals(name))
+                .findFirst();
     }
 }
