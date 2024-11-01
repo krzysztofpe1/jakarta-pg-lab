@@ -58,7 +58,7 @@ public class InitializedData implements ServletContextListener {
         Artist artist1 = Artist.builder()
                 .id(UUID.fromString("396457c5-3f20-49f1-8a7c-755a8d2f0b10"))
                 .firstName("Kuba")
-                .firstName("Grabowski")
+                .lastName("Grabowski")
                 .performances(Collections.emptyList())
                 .build();
 

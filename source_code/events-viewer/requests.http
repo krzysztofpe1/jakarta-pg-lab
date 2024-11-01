@@ -1,31 +1,146 @@
-### GET artists
+# Get all artists
+
 GET http://localhost:9080/api/artists
 
-### GET one artist
-GET http://localhost:9080/api/artists/18a7acce-a056-44c5-b4cb-e20e65bb84cb
+###
 
-### PUT artist avatar
-PUT http://localhost:9080/api/artists/18a7acce-a056-44c5-b4cb-e20e65bb84cb/avatar
-Content-Type: multipart/form-data; boundary=boundary
+# Get single artist
 
---boundary
-Content-Disposition: form-data; name="avatar"; filename="patrick.png"
+GET http://localhost:9080/api/artists/396457c5-3f20-49f1-8a7c-755a8d2f0b10
 
-< src/main/resources/avatars/patrick.png
---boundary--
+###
 
-### GET artist avatar
-GET http://localhost:9080/api/artists/18a7acce-a056-44c5-b4cb-e20e65bb84cb/avatar
+# Get single artist. Not existing.
 
-### PATCH artist avatar
-PATCH http://localhost:9080/api/artists/18a7acce-a056-44c5-b4cb-e20e65bb84cb/avatar
-Content-Type: multipart/form-data; boundary=boundary
+GET http://localhost:9080/api/artists/396457c5-3f20-49f1-8a7c-755a8d2f0b15
 
---boundary
-Content-Disposition: form-data; name="avatar"; filename="ariannaGrande.png"
+###
 
-< src/main/resources/avatars/ariannaGrande.png
---boundary--
+# Put artist
 
-### DELETE artist avatar
-DELETE http://localhost:9080/api/artists/18a7acce-a056-44c5-b4cb-e20e65bb84cb/avatar
+PUT http://localhost:9080/api/artists/396457c5-3f20-49f1-8a7c-755a8d2f0b14
+Content-Type: application/json
+
+{
+  "firstName": "Fryderyk",
+  "lastName": "Szopen"
+}
+
+###
+
+# Patch artist
+
+PATCH http://localhost:9080/api/artists/396457c5-3f20-49f1-8a7c-755a8d2f0b14
+Content-Type: application/json
+
+{
+  "firstName": "Fryderyk",
+  "lastName": "Chopin"
+}
+
+###
+
+# Delete artist
+
+DELETE http://localhost:9080/api/artists/396457c5-3f20-49f1-8a7c-755a8d2f0b14
+
+###
+# Get all performances
+
+GET http://localhost:9080/api/performances
+
+###
+
+# Get single performance
+
+GET http://localhost:9080/api/performances/396457c5-3f20-49f1-8a7c-755a8d2f0b20
+
+###
+
+# Get artist performances
+
+GET http://localhost:9080/api/artists/396457c5-3f20-49f1-8a7c-755a8d2f0b10/performances/
+
+###
+
+# Put performance
+
+PUT http://localhost:9080/api/performances/396457c5-3f20-49f1-8a7c-755a8d2f0b25
+Content-Type: application/json
+
+{
+  "performanceType": "CONCERT",
+  "date": "2222-01-22",
+  "artist": "396457c5-3f20-49f1-8a7c-755a8d2f0b10",
+  "location": "396457c5-3f20-49f1-8a7c-755a8d2f0b30"
+}
+
+###
+
+# Update performance
+
+PATCH http://localhost:9080/api/performances/396457c5-3f20-49f1-8a7c-755a8d2f0b25
+Content-Type: application/json
+
+{
+  "performanceType": "CONCERT",
+  "date": "2000-01-22"
+}
+
+###
+
+# Delete performance
+
+DELETE http://localhost:9080/api/performances/396457c5-3f20-49f1-8a7c-755a8d2f0b25
+
+###
+
+# Get all locations
+
+GET http://localhost:9080/api/locations/
+
+###
+
+# Get single location
+
+GET http://localhost:9080/api/locations/396457c5-3f20-49f1-8a7c-755a8d2f0b30
+
+###
+
+# Get location performances
+
+GET http://localhost:9080/api/locations/396457c5-3f20-49f1-8a7c-755a8d2f0b30/performances
+
+###
+
+# Put location
+
+PUT http://localhost:9080/api/locations/396457c5-3f20-49f1-8a7c-755a8d2f0b32
+Content-Type: application/json
+
+{
+  "streetAddress": "Sopot",
+  "maximumAudienceCapacity": "123",
+  "LocationType": "FIELD"
+}
+
+###
+
+# Patch location
+
+PUT http://localhost:9080/api/locations/396457c5-3f20-49f1-8a7c-755a8d2f0b32
+Content-Type: application/json
+
+{
+  "streetAddress": "Sopot",
+  "maximumAudienceCapacity": "10000",
+  "LocationType": "FIELD"
+}
+
+###
+
+# Delete location
+
+DELETE http://localhost:9080/api/locations/396457c5-3f20-49f1-8a7c-755a8d2f0b32
+
+###

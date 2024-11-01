@@ -1,12 +1,8 @@
 package krzysztof.pecyna.eventsViewer.artist.service;
 
-import jakarta.ws.rs.NotFoundException;
 import krzysztof.pecyna.eventsViewer.artist.entity.Artist;
 import krzysztof.pecyna.eventsViewer.artist.repository.api.ArtistRepository;
-import krzysztof.pecyna.eventsViewer.component.AvatarService;
-import krzysztof.pecyna.eventsViewer.component.exception.AvatarDoesNotExistException;
-import krzysztof.pecyna.eventsViewer.component.exception.AvatarExistsException;
-
+import krzysztof.pecyna.eventsViewer.controller.servlet.exception.NotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -15,14 +11,9 @@ import java.util.UUID;
 
 import jakarta.inject.Inject;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import krzysztof.pecyna.eventsViewer.controller.servlet.exception.AlreadyExistsException;

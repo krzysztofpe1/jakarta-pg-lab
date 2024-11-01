@@ -6,19 +6,6 @@
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
-	<listener>
-		<listener-class>krzysztof.pecyna.eventsViewer.configuration.listner.CreateDataSource</listener-class>
-	</listener>
-	<listener>
-		<listener-class>krzysztof.pecyna.eventsViewer.configuration.listner.CreateServices</listener-class>
-	</listener>
-	<listener>
-		<listener-class>krzysztof.pecyna.eventsViewer.configuration.listner.CreateControllers</listener-class>
-	</listener>
-	<listener>
-		<listener-class>krzysztof.pecyna.eventsViewer.configuration.listner.InitializedData</listener-class>
-	</listener>
-
 	<context-param>
 		<param-name>avatarsDirectoryPath</param-name>
 		<param-value>avatars</param-value>
