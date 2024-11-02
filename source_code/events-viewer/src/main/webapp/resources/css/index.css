@@ -1,7 +1,7 @@
 body {
     margin: 0;
-    background-color: #262626;
-    color: aliceblue;
+    background-color: #000000;
+    color: #ae0000;
 }
 
 .main-header {
@@ -16,7 +16,7 @@ body {
 
 .nav-list {
     display: flex;
-    gap: 8px;
+    gap: 15px;
     list-style: none;
     font-size: 20px;
 }
@@ -28,11 +28,6 @@ body {
 
 a {
     color: aliceblue;
-    transition: 0.3s;
-}
-
-a:hover {
-    color: gold;
 }
 
 .logo-container {
@@ -64,9 +59,6 @@ h2 {
     transition: 0.3s;
 }
 
-.button:hover {
-    color: gold;
-}
 input[type='text']{
     margin-left: 15px;
 }

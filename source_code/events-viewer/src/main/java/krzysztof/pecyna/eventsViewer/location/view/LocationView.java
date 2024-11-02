@@ -50,10 +50,10 @@ public class LocationView implements Serializable {
         }
     }
 
-    public String deletePerformance(UUID userId) {
-        performanceService.delete(userId);
+    public String deletePerformance(UUID id) {
+        performanceService.delete(id);
         String viewId = FacesContext.getCurrentInstance().getViewRoot().getViewId();
-        return viewId + "?faces-redirect=true&includeViewParams=true";
+        return viewId.isEmpty() ? "" : viewId + "?faces-redirect=true&includeViewParams=true";
     }
 
 }

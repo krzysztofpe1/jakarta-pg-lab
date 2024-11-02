@@ -15,16 +15,13 @@
             <header><h2>Edit performance</h2></header>
             <h:form onreset="onReset()" enctype="multipart/form-data">
                 <div>
-                    <div>
-                        <h:outputLabel for="date" value="Date:" styleClass="form-label"/>
-                        <h:inputText id="date" value="#{performanceEdit.performance.date}"/>
-                    </div>
+                    <h:outputText id="date" value="#{performanceEdit.performance.date}" />
                 </div>
 
                 <div>
                     <div>
                         <h:outputLabel for="performanceType" value="Performance type:"/>
-                        <h:inputText id="performanceType" value="#{performanceEdit.performance.performanceType}" type="number"/>
+                        <h:inputText id="performanceType" value="#{performanceEdit.performance.performanceType}"/>
                     </div>
                 </div>
                 <ui:repeat value="#{performanceEdit.locations}" var="location">
@@ -36,9 +33,9 @@
                     </div>
                 </ui:repeat>
                 <div class="button-container">
-                        <h:commandButton class="button" value="Update"
-                                         action="#{performanceEdit.saveAction()}"/>
-                        <h:commandButton class="button" type="reset" value="Reset"/>
+                    <h:commandButton class="button" value="Update"
+                                     action="#{performanceEdit.saveAction()}"/>
+                    <h:commandButton class="button" type="reset" value="Reset"/>
                 </div>
             </h:form>
         </article>

@@ -11,7 +11,7 @@
             <h:dataTable value="#{locationList.locations.locations}" var="location">
                 <h:column>
                     <h:link outcome="/location/location_view.xhtml">
-                        <h:outputText value="#{location.name}"/>
+                        <h:outputText value="#{location.streetAddress}"/>
                         <f:param name="id" value="#{location.id}"/>
                     </h:link>
                 </h:column>

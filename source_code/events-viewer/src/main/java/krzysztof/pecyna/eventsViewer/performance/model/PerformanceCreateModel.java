@@ -1,7 +1,7 @@
 package krzysztof.pecyna.eventsViewer.performance.model;
 
 import krzysztof.pecyna.eventsViewer.artist.entity.Artist;
-import krzysztof.pecyna.eventsViewer.location.entity.Location;
+import krzysztof.pecyna.eventsViewer.location.model.LocationModel;
 import krzysztof.pecyna.eventsViewer.performance.entity.PerformanceType;
 import lombok.*;
 
@@ -22,7 +22,7 @@ public class PerformanceCreateModel {
 
     private PerformanceType performanceType;
 
-    private Location location;
+    private LocationModel location;
 
     private Artist artist;
 }

@@ -69,7 +69,7 @@ public class PerformanceSimpleController implements PerformanceController {
 
     @Override
     public void patchPerformance(UUID id, PatchPerformanceRequest request) {
-        performanceService.find(id).ifPresentOrElse(entity -> performanceService.update(factory.updatePerformance().apply(entity, request)), () -> {
+        performanceService.find(id).ifPresentOrElse(entity -> performanceService.update(factory.updatePerformance().apply(entity, request), entity.getLocation().getId()), () -> {
             throw new NotFoundException("Performance not found");
         });
     }

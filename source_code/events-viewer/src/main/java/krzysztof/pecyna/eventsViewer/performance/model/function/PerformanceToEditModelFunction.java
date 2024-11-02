@@ -1,5 +1,6 @@
 package krzysztof.pecyna.eventsViewer.performance.model.function;
 
+import krzysztof.pecyna.eventsViewer.location.model.LocationModel;
 import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
 import krzysztof.pecyna.eventsViewer.performance.model.PerformanceEditModel;
 

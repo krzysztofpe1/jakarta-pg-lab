@@ -16,12 +16,12 @@
 
                 <div>
                     <h:outputLabel for="date" value="date:" styleClass="form-label"/>
-                    <h:inputText id="date" value="#{performanceCreate.performance.date}" styleClass="form-control"/>
+                    <h:inputText id="date" value="#{performanceCreate.performance.date}" type="date" converter="localDateConverter"/>
                 </div>
 
                 <div>
                     <h:outputLabel for="performanceType" value="Performance type:"/>
-                    <h:inputText id="performanceType" value="#{performanceCreate.performance.performanceType}" type="number"/>
+                    <h:inputText id="performanceType" value="#{performanceCreate.performance.performanceType}" />
 
                 </div>
 

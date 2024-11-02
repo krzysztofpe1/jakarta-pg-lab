@@ -64,7 +64,7 @@ public class PerformanceEdit implements Serializable {
     }
 
     public String saveAction() {
-        if (performance.getLocation() == null || performance.getDate() == null) {
+        if (performance.getPerformanceType() == null) {
             return null;
         }
         performanceService.update(factory.updatePerformance().apply(performanceService.find(id).orElseThrow(), performance), initialLocation);
