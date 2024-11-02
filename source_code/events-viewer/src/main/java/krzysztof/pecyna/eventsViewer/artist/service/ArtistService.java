@@ -2,7 +2,8 @@ package krzysztof.pecyna.eventsViewer.artist.service;
 
 import krzysztof.pecyna.eventsViewer.artist.entity.Artist;
 import krzysztof.pecyna.eventsViewer.artist.repository.api.ArtistRepository;
-import krzysztof.pecyna.eventsViewer.controller.servlet.exception.NotFoundException;
+import jakarta.ws.rs.NotFoundException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import krzysztof.pecyna.eventsViewer.controller.servlet.exception.AlreadyExistsException;
+import jakarta.ws.rs.NotAllowedException;
 import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
 import krzysztof.pecyna.eventsViewer.performance.service.PerformanceService;
 
@@ -67,12 +68,12 @@ public class ArtistService {
 
     }
 
-    public void createAvatar(UUID id, InputStream avatar, String pathToAvatars) throws AlreadyExistsException {
+    public void createAvatar(UUID id, InputStream avatar, String pathToAvatars) throws NotAllowedException {
         artistRepository.find(id).ifPresent(artist -> {
             try {
                 Path destinationPath = Path.of(pathToAvatars, id.toString() + ".png");
                 if (Files.exists(destinationPath)) {
-                    throw new AlreadyExistsException("Avatar already exists, to update avatar use PATCH method");
+                    throw new NotAllowedException("Avatar already exists, to update avatar use PATCH method");
                 }
                 Files.copy(avatar, destinationPath);
             } catch (IOException ex) {

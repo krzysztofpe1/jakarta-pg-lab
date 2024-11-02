@@ -8,7 +8,8 @@ import krzysztof.pecyna.eventsViewer.location.entity.Location;
 import krzysztof.pecyna.eventsViewer.location.service.LocationService;
 import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
 import krzysztof.pecyna.eventsViewer.performance.repository.api.PerformanceRepository;
-import krzysztof.pecyna.eventsViewer.controller.servlet.exception.NotFoundException;
+import jakarta.ws.rs.NotFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

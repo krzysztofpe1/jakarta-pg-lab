@@ -9,8 +9,9 @@ import krzysztof.pecyna.eventsViewer.artist.dto.PatchArtistRequest;
 import krzysztof.pecyna.eventsViewer.artist.dto.PutArtistRequest;
 import krzysztof.pecyna.eventsViewer.artist.service.ArtistService;
 import krzysztof.pecyna.eventsViewer.component.DtoFunctionFactory;
-import krzysztof.pecyna.eventsViewer.controller.servlet.exception.NotFoundException;
-import krzysztof.pecyna.eventsViewer.controller.servlet.exception.AlreadyExistsException;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.NotAllowedException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -48,7 +49,7 @@ public class ArtistSimpleController implements ArtistController {
         try {
             artistService.create(factory.requestToArtist().apply(id, request));
         } catch (IllegalArgumentException ex) {
-            throw new AlreadyExistsException("Artist already exists, to update artist use PATCH method");
+            throw new NotAllowedException("Artist already exists, to update artist use PATCH method");
         }
     }
 
