@@ -1,29 +1,44 @@
-package krzysztof.pecyna.eventsViewer.location.controller.simple;
+package krzysztof.pecyna.eventsViewer.location.controller.rest;
 
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.NotAllowedException;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 import krzysztof.pecyna.eventsViewer.component.DtoFunctionFactory;
-import krzysztof.pecyna.eventsViewer.controller.servlet.exception.AlreadyExistsException;
 import krzysztof.pecyna.eventsViewer.location.controller.api.LocationController;
-import krzysztof.pecyna.eventsViewer.controller.servlet.exception.NotFoundException;
 import krzysztof.pecyna.eventsViewer.location.dto.GetLocationResponse;
 import krzysztof.pecyna.eventsViewer.location.dto.GetLocationsResponse;
-import krzysztof.pecyna.eventsViewer.location.service.LocationService;
-import krzysztof.pecyna.eventsViewer.location.dto.PutLocationRequest;
 import krzysztof.pecyna.eventsViewer.location.dto.PatchLocationRequest;
+import krzysztof.pecyna.eventsViewer.location.dto.PutLocationRequest;
+import krzysztof.pecyna.eventsViewer.location.service.LocationService;
 
 import java.util.UUID;
 
-@RequestScoped
-public class LocationSimpleController implements LocationController {
+@Path("")
+public class LocationRestController implements LocationController {
     private final LocationService locationService;
 
     private final DtoFunctionFactory factory;
 
+    private final UriInfo uriInfo;
+
+    private HttpServletResponse response;
+
+    @Context
+    public void setResponse(HttpServletResponse response) {
+        this.response = response;
+    }
+
     @Inject
-    public LocationSimpleController(final LocationService locationService, final DtoFunctionFactory factory) {
+    public LocationRestController(final LocationService locationService, final DtoFunctionFactory factory, @SuppressWarnings("CdiInjectionPointsInspection") UriInfo uriInfo) {
         this.factory = factory;
         this.locationService = locationService;
+        this.uriInfo = uriInfo;
     }
 
     @Override
@@ -42,8 +57,13 @@ public class LocationSimpleController implements LocationController {
     public void putLocation(UUID id, PutLocationRequest request) {
         try {
             locationService.create(factory.requestToLocation().apply(id, request));
+            response.setHeader("Location", uriInfo.getBaseUriBuilder()
+                    .path(LocationController.class, "getLocation")
+                    .build(id)
+                    .toString());
+            throw new WebApplicationException(Response.Status.CREATED);
         } catch (IllegalArgumentException ex) {
-            throw new AlreadyExistsException("Location already exists, to update location use PATCH method");
+            throw new NotAllowedException("Location already exists, to update location use PATCH method");
         }
     }
 

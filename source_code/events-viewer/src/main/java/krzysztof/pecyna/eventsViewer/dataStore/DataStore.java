@@ -116,6 +116,8 @@ public class DataStore {
     public synchronized void deleteLocation(UUID id) throws IllegalArgumentException {
         if (!locations.removeIf(location -> location.getId().equals(id))) {
             throw new IllegalArgumentException("The location with id \"%s\" does not exist".formatted(id));
+        }else {
+            performances.removeIf(unit -> unit.getLocation().getId().equals(id));
         }
     }
 }
