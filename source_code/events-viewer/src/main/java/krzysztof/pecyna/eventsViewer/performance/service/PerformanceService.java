@@ -44,6 +44,14 @@ public class PerformanceService {
         return performanceRepository.findAll();
     }
 
+    public Optional<Performance> findByLocationAndPerformance(UUID locationId, UUID performanceId) {
+        Location location = locationService.find(locationId)
+                .orElseThrow(() -> new NotFoundException("Location not found: " + locationId));
+
+        return performanceRepository.find(performanceId)
+                .filter(performance -> performance.getLocation().getId().equals(location.getId()));
+    }
+
     public void create(Performance performance, UUID artistId, UUID locationId) {
 
         Artist artist = artistService.find(artistId).orElseThrow(() -> new NotFoundException("Artist not found: " + artistId));

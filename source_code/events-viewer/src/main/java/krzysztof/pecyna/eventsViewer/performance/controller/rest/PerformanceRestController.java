@@ -4,11 +4,11 @@ import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.NotAllowedException;
 import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.Path;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+import jakarta.ws.rs.Path;
 import krzysztof.pecyna.eventsViewer.component.DtoFunctionFactory;
 import krzysztof.pecyna.eventsViewer.performance.controller.api.PerformanceController;
 import krzysztof.pecyna.eventsViewer.performance.dto.GetPerformanceResponse;
@@ -17,6 +17,7 @@ import krzysztof.pecyna.eventsViewer.performance.dto.PatchPerformanceRequest;
 import krzysztof.pecyna.eventsViewer.performance.dto.PutPerformanceRequest;
 import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
 import krzysztof.pecyna.eventsViewer.performance.service.PerformanceService;
+
 
 import java.util.UUID;
 
@@ -58,6 +59,50 @@ public class PerformanceRestController implements PerformanceController {
     }
 
     @Override
+    public GetPerformanceResponse getLocationPerformance(UUID locationId, UUID performanceId) {
+        return performanceService.findByLocationAndPerformance(locationId, performanceId)
+                .map(factory.performanceToResponse())
+                .orElseThrow(() -> new NotFoundException("Performance not found in the specified location"));
+    }
+
+    @Override
+    public void putLocationPerformance(UUID locationId, UUID performanceId, PutPerformanceRequest request) {
+        try {
+            request.setLocation(locationId);
+            Performance performance = factory.requestToPerformance().apply(performanceId, request);
+            performanceService.create(performance, request.getArtist(), locationId);
+
+            response.setHeader("Location", uriInfo.getBaseUriBuilder()
+                    .path(PerformanceController.class, "getPerformance")
+                    .build(performanceId)
+                    .toString());
+            throw new WebApplicationException(Response.Status.CREATED);
+        } catch (IllegalArgumentException ex) {
+            throw new NotAllowedException("Performance already exists, to update performance use PATCH method");
+        } catch (NotFoundException ex) {
+            throw new NotFoundException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void patchLocationPerformance(UUID locationId, UUID performanceId, PatchPerformanceRequest request) {
+        performanceService.findByLocationAndPerformance(locationId, performanceId).ifPresentOrElse(
+                entity -> performanceService.update(factory.updatePerformance().apply(entity, request), locationId),
+                () -> {
+                    throw new NotFoundException("Performance not found in the specified location");
+                });
+    }
+
+    @Override
+    public void deleteLocationPerformance(UUID locationId, UUID performanceId) {
+        performanceService.findByLocationAndPerformance(locationId, performanceId).ifPresentOrElse(
+                entity -> performanceService.delete(performanceId),
+                () -> {
+                    throw new NotFoundException("Performance not found in the specified location");
+                });
+    }
+
+    @Override
     public GetPerformancesResponse getPerformances() {
         return factory.performancesToResponse().apply(performanceService.findAll());
     }
@@ -69,35 +114,4 @@ public class PerformanceRestController implements PerformanceController {
                 .orElseThrow(() -> new NotFoundException("Performance not found"));
     }
 
-    @Override
-    public void putPerformance(UUID id, PutPerformanceRequest request) {
-        try {
-            Performance performance = factory.requestToPerformance().apply(id, request);
-            performanceService.create(performance, request.getArtist(), request.getLocation());
-
-            response.setHeader("Location", uriInfo.getBaseUriBuilder()
-                    .path(PerformanceController.class, "getPerformance")
-                    .build(id)
-                    .toString());
-            throw new WebApplicationException(Response.Status.CREATED);
-        } catch (IllegalArgumentException ex) {
-            throw new NotAllowedException("Performance already exists, to update performance use PATCH method");
-        } catch (NotFoundException ex) {
-            throw new NotFoundException(ex.getMessage());
-        }
-    }
-
-    @Override
-    public void patchPerformance(UUID id, PatchPerformanceRequest request) {
-        performanceService.find(id).ifPresentOrElse(entity -> performanceService.update(factory.updatePerformance().apply(entity, request), entity.getLocation().getId()), () -> {
-            throw new NotFoundException("Performance not found");
-        });
-    }
-
-    @Override
-    public void deletePerformance(UUID id) {
-        performanceService.find(id).ifPresentOrElse(entity -> performanceService.delete(id), () -> {
-            throw new NotFoundException("Performance not found");
-        });
-    }
 }

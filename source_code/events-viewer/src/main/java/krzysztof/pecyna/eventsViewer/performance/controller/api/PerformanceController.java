@@ -22,6 +22,24 @@ public interface PerformanceController {
     GetPerformancesResponse getLocationPerformances(@PathParam("id") UUID id);
 
     @GET
+    @Path("/locations/{locationId}/performances/{performanceId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    GetPerformanceResponse getLocationPerformance(@PathParam("locationId") UUID locationId, @PathParam("performanceId") UUID performanceId);
+
+    @PUT
+    @Path("/locations/{locationId}/performances/{performanceId}")
+    void putLocationPerformance(@PathParam("locationId") UUID locationId, @PathParam("performanceId") UUID performanceId, PutPerformanceRequest request);
+
+    @PATCH
+    @Path("/locations/{locationId}/performances/{performanceId}")
+    void patchLocationPerformance(@PathParam("locationId") UUID locationId, @PathParam("performanceId") UUID performanceId, PatchPerformanceRequest request);
+
+    @DELETE
+    @Path("/locations/{locationId}/performances/{performanceId}")
+    void deleteLocationPerformance(@PathParam("locationId") UUID locationId, @PathParam("performanceId") UUID performanceId);
+
+    // Test only
+    @GET
     @Path("/performances")
     @Produces(MediaType.APPLICATION_JSON)
     GetPerformancesResponse getPerformances();
@@ -31,15 +49,5 @@ public interface PerformanceController {
     @Produces(MediaType.APPLICATION_JSON)
     GetPerformanceResponse getPerformance(@PathParam("id") UUID id);
 
-    @PUT
-    @Path("/performances/{id}")
-    void putPerformance(@PathParam("id") UUID id, PutPerformanceRequest request);
 
-    @PATCH
-    @Path("/performances/{id}")
-    void patchPerformance(@PathParam("id") UUID id, PatchPerformanceRequest request);
-
-    @DELETE
-    @Path("/performances/{id}")
-    void deletePerformance(@PathParam("id") UUID id);
 }
