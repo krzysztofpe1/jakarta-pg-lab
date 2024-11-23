@@ -42,7 +42,7 @@ public class ArtistService {
         return artistRepository.find(id);
     }
 
-    public Optional<Artist> find(String name) {
+    public Optional<List<Artist>> find(String name) {
         return artistRepository.findByName(name);
     }
 

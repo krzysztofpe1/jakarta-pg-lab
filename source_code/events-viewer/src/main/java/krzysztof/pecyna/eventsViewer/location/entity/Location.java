@@ -1,5 +1,6 @@
 package krzysztof.pecyna.eventsViewer.location.entity;
 
+import jakarta.persistence.*;
 import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -15,7 +16,12 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
+@Entity
+@Table(name = "locations")
+
 public class Location implements Serializable {
+
+    @Id
     private UUID id;
 
     private String streetAddress;
@@ -24,5 +30,6 @@ public class Location implements Serializable {
 
     private LocationType locationType;
 
+    @OneToMany
     private List<Performance> performances;
 }

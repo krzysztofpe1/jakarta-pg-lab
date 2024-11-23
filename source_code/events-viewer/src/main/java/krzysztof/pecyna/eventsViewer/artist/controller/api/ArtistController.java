@@ -1,23 +1,41 @@
 package krzysztof.pecyna.eventsViewer.artist.controller.api;
 
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import krzysztof.pecyna.eventsViewer.artist.dto.GetArtistResponse;
 import krzysztof.pecyna.eventsViewer.artist.dto.GetArtistsResponse;
 import krzysztof.pecyna.eventsViewer.artist.dto.PatchArtistRequest;
 import krzysztof.pecyna.eventsViewer.artist.dto.PutArtistRequest;
 
+import javax.print.attribute.standard.Media;
+import java.awt.*;
 import java.io.InputStream;
 import java.util.UUID;
 
 public interface ArtistController {
-    GetArtistResponse getArtist(UUID id);
 
+    /*@GET
+    @Path("/artists/{id}")
+    @Produces(MediaType.APPLICATION_JSON)*/
+    GetArtistResponse getArtist( @PathParam("id") UUID id);
+
+    /*@GET
+    @Path("/artists/")
+    @Produces(MediaType.APPLICATION_JSON)*/
     GetArtistsResponse getArtists();
 
-    void putArtist(UUID id, PutArtistRequest request);
+    /*@PUT
+    @Path("/artists/{id}")*/
+    void putArtist(@PathParam("id") UUID id, PutArtistRequest request);
 
-    void patchArtist(UUID id, PatchArtistRequest request);
+    /*@PATCH
+    @Path("/artists/{id}")*/
+    void patchArtist(@PathParam("id") UUID id, PatchArtistRequest request);
 
-    void deleteArtist(UUID id);
+    /*@DELETE
+    @Path("/artists/{id}")*/
+    void deleteArtist(@PathParam("id") UUID id);
+
 
     byte[] getArtistAvatar(UUID id, String pathToAvatars);
 
