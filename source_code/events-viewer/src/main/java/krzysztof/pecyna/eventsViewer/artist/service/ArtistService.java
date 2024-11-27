@@ -1,5 +1,6 @@
 package krzysztof.pecyna.eventsViewer.artist.service;
 
+import jakarta.transaction.Transactional;
 import krzysztof.pecyna.eventsViewer.artist.entity.Artist;
 import krzysztof.pecyna.eventsViewer.artist.repository.api.ArtistRepository;
 import jakarta.ws.rs.NotFoundException;
@@ -50,14 +51,17 @@ public class ArtistService {
         return artistRepository.findAll();
     }
 
+    @Transactional
     public void create(Artist artist) {
         artistRepository.create(artist);
     }
 
+    @Transactional
     public void update(Artist artist) {
         artistRepository.update(artist);
     }
 
+    @Transactional
     public void delete(UUID id) {
         Artist artist = artistRepository.find(id).orElseThrow(NotFoundException::new);
         Optional<List<Performance>> performancesToDelete = performanceService.findAllByArtist(id);

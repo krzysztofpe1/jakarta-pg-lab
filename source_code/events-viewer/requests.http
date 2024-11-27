@@ -98,7 +98,7 @@ GET http://localhost:9080/api/locations/396457c5-3f20-49f1-8a7c-755a8d2f0b30
 
 # Get location performances
 
-GET http://localhost:9080/api/locations/396457c5-3f20-49f1-8a7c-755a8d2f0b30/performances
+GET http://localhost:9080/api/locations/396457c5-3f20-49f1-8a7c-755a8d2f0b32/performances
 
 ###
 
@@ -128,7 +128,7 @@ Content-Type: application/json
 
 # Delete location
 
-DELETE http://localhost:9080/api/locations/396457c5-3f20-49f1-8a7c-755a8d2f0b30
+DELETE http://localhost:9080/api/locations/396457c5-3f20-49f1-8a7c-755a8d2f0b32
 
 ###
 
@@ -152,7 +152,7 @@ GET http://localhost:9080/api/artists/396457c5-3f20-49f1-8a7c-755a8d2f0b11/perfo
 
 # Put performance
 
-PUT http://localhost:9080/api/locations/396457c5-3f20-49f1-8a7c-755a8d2f0b30/performances/396457c5-3f20-49f1-8a7c-755a8d2f0b24
+PUT http://localhost:9080/api/locations/396457c5-3f20-49f1-8a7c-755a8d2f0b32/performances/396457c5-3f20-49f1-8a7c-755a8d2f0b24
 Content-Type: application/json
 
 {

@@ -30,6 +30,9 @@ public class Location implements Serializable {
 
     private LocationType locationType;
 
-    @OneToMany
+    @OneToMany(mappedBy = "location", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @ToString.Exclude // Exclude to avoid cyclic references in toString
+    @EqualsAndHashCode.Exclude
     private List<Performance> performances;
 }
+

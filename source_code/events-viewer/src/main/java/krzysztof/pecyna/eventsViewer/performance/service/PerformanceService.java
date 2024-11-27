@@ -2,6 +2,7 @@ package krzysztof.pecyna.eventsViewer.performance.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import krzysztof.pecyna.eventsViewer.artist.entity.Artist;
 import krzysztof.pecyna.eventsViewer.artist.service.ArtistService;
 import krzysztof.pecyna.eventsViewer.location.entity.Location;
@@ -52,6 +53,7 @@ public class PerformanceService {
                 .filter(performance -> performance.getLocation().getId().equals(location.getId()));
     }
 
+    @Transactional
     public void create(Performance performance, UUID artistId, UUID locationId) {
 
         Artist artist = artistService.find(artistId).orElseThrow(() -> new NotFoundException("Artist not found: " + artistId));
@@ -71,6 +73,7 @@ public class PerformanceService {
         locationService.update(location);
     }
 
+    @Transactional
     public void update(Performance performance, UUID initialLocation) {
         Artist artist = artistService.find(performance.getArtist().getId())
                 .orElseThrow(() -> new NotFoundException("Artist not found: " + performance.getArtist().getId()));
@@ -101,6 +104,7 @@ public class PerformanceService {
         performanceRepository.update(performance);
     }
 
+    @Transactional
     public void delete(UUID id) {
         Performance performance = performanceRepository.find(id)
                 .orElseThrow(NotFoundException::new);

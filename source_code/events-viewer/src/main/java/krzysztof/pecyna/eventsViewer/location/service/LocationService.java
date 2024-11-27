@@ -2,6 +2,7 @@ package krzysztof.pecyna.eventsViewer.location.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import krzysztof.pecyna.eventsViewer.location.entity.Location;
 import krzysztof.pecyna.eventsViewer.location.repository.api.LocationRepository;
 import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
@@ -38,25 +39,19 @@ public class LocationService {
         return locationRepository.findAll();
     }
 
+    @Transactional
     public void create(Location location) {
         locationRepository.create(location);
     }
 
+    @Transactional
     public void update(Location location) {
         locationRepository.update(location);
     }
 
+    @Transactional
     public void delete(UUID id) {
         Location location = locationRepository.find(id).orElseThrow(NotFoundException::new);
-        Optional<List<Performance>> performancesToDelete = performanceService.findAllByLocation(id);
-        performancesToDelete.ifPresent(performances -> performances.forEach(performance -> {
-            performanceService.delete(performance.getId());
-        }));
-
-        performancesToDelete.ifPresent(performances -> {
-
-        });
-
         locationRepository.delete(location);
     }
 }

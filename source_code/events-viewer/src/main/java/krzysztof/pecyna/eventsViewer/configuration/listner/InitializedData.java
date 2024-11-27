@@ -55,6 +55,9 @@ public class InitializedData implements ServletContextListener {
     private void init() {
         requestContextController.activate();
 
+        if(!artistService.findAll().isEmpty())
+            return;
+
         Artist artist1 = Artist.builder()
                 .id(UUID.fromString("396457c5-3f20-49f1-8a7c-755a8d2f0b10"))
                 .firstName("Kuba")
@@ -122,6 +125,7 @@ public class InitializedData implements ServletContextListener {
                 .locationType(LocationType.FIELD)
                 .performances(Collections.emptyList())
                 .build();
+
 
         performance1.setArtist(artist1);
         performance1.setLocation(location1);

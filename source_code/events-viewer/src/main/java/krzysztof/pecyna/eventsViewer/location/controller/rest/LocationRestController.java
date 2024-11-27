@@ -77,8 +77,9 @@ public class LocationRestController implements LocationController {
 
     @Override
     public void deleteLocation(UUID id) {
-        locationService.find(id).ifPresentOrElse(entity -> locationService.delete(id), () -> {
+        locationService.delete(id);
+        /*locationService.find(id).ifPresentOrElse(entity -> locationService.delete(id), () -> {
             throw new NotFoundException("Location not found");
-        });
+        });*/
     }
 }

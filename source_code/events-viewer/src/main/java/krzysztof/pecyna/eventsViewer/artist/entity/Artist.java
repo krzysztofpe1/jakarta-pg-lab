@@ -28,6 +28,8 @@ public class Artist implements Serializable {
 
     private String lastName;
 
-    @OneToMany
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @ToString.Exclude // Exclude to avoid cyclic references in toString
+    @EqualsAndHashCode.Exclude
     private List<Performance> performances;
 }

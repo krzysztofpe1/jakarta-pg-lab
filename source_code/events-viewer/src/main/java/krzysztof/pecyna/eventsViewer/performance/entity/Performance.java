@@ -31,11 +31,14 @@ public class Performance implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "location")
-    @ToString.Exclude
+    @ToString.Exclude // Exclude to avoid cyclic references in toString
+    @EqualsAndHashCode.Exclude
     private Location location;
 
     @ManyToOne
     @JoinColumn(name = "artist")
-    @ToString.Exclude
+    @ToString.Exclude // Exclude to avoid cyclic references in toString
+    @EqualsAndHashCode.Exclude
     private Artist artist;
 }
+
