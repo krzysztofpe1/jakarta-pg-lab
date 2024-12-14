@@ -47,4 +47,6 @@ public class GetPerformanceResponse {
     private Location location;
 
     private Artist artist;
+
+    private Long version;
 }

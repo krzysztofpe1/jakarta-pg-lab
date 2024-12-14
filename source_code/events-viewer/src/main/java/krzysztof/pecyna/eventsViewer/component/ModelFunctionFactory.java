@@ -4,7 +4,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import krzysztof.pecyna.eventsViewer.artist.model.function.ArtistToModelFunction;
 import krzysztof.pecyna.eventsViewer.artist.model.function.ArtistsToModelFunction;
 import krzysztof.pecyna.eventsViewer.location.model.function.*;
-import krzysztof.pecyna.eventsViewer.performance.model.function.UpdatePerformanceWithModelFunction;
 import krzysztof.pecyna.eventsViewer.performance.model.function.*;
 
 @ApplicationScoped
@@ -40,6 +39,10 @@ public class ModelFunctionFactory {
 
     public UpdatePerformanceWithModelFunction updatePerformance() {
         return new UpdatePerformanceWithModelFunction();
+    }
+
+    public PerformancesToModelFunction performancesToModel(){
+        return new PerformancesToModelFunction();
     }
 
     public ArtistToModelFunction artistToModel() {

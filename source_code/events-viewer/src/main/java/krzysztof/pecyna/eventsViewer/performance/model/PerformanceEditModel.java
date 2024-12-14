@@ -22,4 +22,6 @@ public class PerformanceEditModel {
     private LocationModel location;
 
     private Artist artist;
+
+    private Long version;
 }

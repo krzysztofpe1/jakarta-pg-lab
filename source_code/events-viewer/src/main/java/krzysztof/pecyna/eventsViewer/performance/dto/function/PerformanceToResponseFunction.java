@@ -13,6 +13,7 @@ public class PerformanceToResponseFunction implements Function<Performance, GetP
                 .id(performance.getId())
                 .date(performance.getDate())
                 .performanceType(performance.getPerformanceType())
+                .version(performance.getVersion())
                 .artist(GetPerformanceResponse.Artist.builder()
                         .id(performance.getArtist().getId())
                         .build())

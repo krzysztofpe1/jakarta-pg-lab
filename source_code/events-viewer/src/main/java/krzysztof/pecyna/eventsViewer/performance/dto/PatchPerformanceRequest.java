@@ -17,4 +17,5 @@ public class PatchPerformanceRequest {
 
     private PerformanceType performanceType;
 
+    private Long version;
 }

@@ -9,7 +9,7 @@ import krzysztof.pecyna.eventsViewer.performance.dto.PatchPerformanceRequest;
 import krzysztof.pecyna.eventsViewer.performance.dto.PutPerformanceRequest;
 
 import java.util.UUID;
-
+@Path("")
 public interface PerformanceController {
     @GET
     @Path("/artists/{id}/performances")

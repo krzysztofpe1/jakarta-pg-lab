@@ -15,6 +15,8 @@ public class UpdatePerformanceWithRequestFunction implements BiFunction<Performa
                 .performanceType(request.getPerformanceType())
                 .artist(performance.getArtist())
                 .location(performance.getLocation())
+                .version(request.getVersion())
+                .creationDateTime(performance.getCreationDateTime())
                 .build();
     }
 }

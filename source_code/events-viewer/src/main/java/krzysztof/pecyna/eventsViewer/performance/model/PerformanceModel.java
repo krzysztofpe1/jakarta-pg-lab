@@ -4,6 +4,7 @@ import krzysztof.pecyna.eventsViewer.performance.entity.PerformanceType;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -19,4 +20,8 @@ public class PerformanceModel {
     private LocalDate date;
 
     private PerformanceType performanceType;
+
+    private Long version;
+
+    private LocalDateTime creationDateTime;
 }

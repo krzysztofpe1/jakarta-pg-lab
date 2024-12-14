@@ -1,48 +1,83 @@
 package krzysztof.pecyna.eventsViewer.performance.service;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.ejb.EJBAccessException;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
+import jakarta.security.enterprise.SecurityContext;
 import krzysztof.pecyna.eventsViewer.artist.entity.Artist;
+import krzysztof.pecyna.eventsViewer.artist.entity.UserRoles;
+import krzysztof.pecyna.eventsViewer.artist.repository.api.ArtistRepository;
 import krzysztof.pecyna.eventsViewer.artist.service.ArtistService;
 import krzysztof.pecyna.eventsViewer.location.entity.Location;
 import krzysztof.pecyna.eventsViewer.location.service.LocationService;
 import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
 import krzysztof.pecyna.eventsViewer.performance.repository.api.PerformanceRepository;
 import jakarta.ws.rs.NotFoundException;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@ApplicationScoped
+@LocalBean
+@Stateless
+@NoArgsConstructor(force = true)
 public class PerformanceService {
     private final PerformanceRepository performanceRepository;
+
+    private final ArtistRepository artistRepository;
 
     private final ArtistService artistService;
 
     private final LocationService locationService;
 
+    private final SecurityContext securityContext;
+
     @Inject
-    public PerformanceService(PerformanceRepository performanceRepository, ArtistService artistService, LocationService locationService) {
+    public PerformanceService(PerformanceRepository performanceRepository, ArtistRepository artistRepository, ArtistService artistService, LocationService locationService,
+                       @SuppressWarnings("CdiInjectionPointsInspection") SecurityContext securityContext) {
         this.performanceRepository = performanceRepository;
+        this.artistRepository = artistRepository;
         this.artistService = artistService;
         this.locationService = locationService;
+        this.securityContext = securityContext;
+
     }
 
-    public PerformanceService() {
-        this.performanceRepository = null;
-        this.artistService = null;
-        this.locationService = null;
-    }
-
+    @RolesAllowed(UserRoles.USER)
     public Optional<Performance> find(UUID id) {
         return performanceRepository.find(id);
     }
 
-    public List<Performance> findAll() {
-        return performanceRepository.findAll();
+    @RolesAllowed(UserRoles.USER)
+    public Optional<Performance> find(Artist artist, UUID id) {
+        return performanceRepository.findByIdAndArtist(id, artist);
     }
+
+
+    @RolesAllowed(UserRoles.USER)
+    public Optional<Performance> findForCallerPrincipal(UUID locationId, UUID performanceId) {
+        checkAdminRoleOrOwner(performanceRepository.find(performanceId));
+        return findByLocationAndPerformance(locationId, performanceId);
+    }
+
+    @RolesAllowed({UserRoles.USER, UserRoles.ADMIN})
+    public List<Performance> findAllForCallerPrincipal() {
+        if (securityContext.isCallerInRole(UserRoles.ADMIN)) {
+            return performanceRepository.findAll();
+        }
+        Artist artist = artistRepository.findByLastName(securityContext.getCallerPrincipal().getName()).orElseThrow(IllegalStateException::new);
+        return findAll(artist);
+    }
+
+    @RolesAllowed(UserRoles.USER)
+    public List<Performance> findAll(Artist artist) {
+        return performanceRepository.findAllByArtist(artist);
+    }
+
 
     public Optional<Performance> findByLocationAndPerformance(UUID locationId, UUID performanceId) {
         Location location = locationService.find(locationId)
@@ -52,6 +87,7 @@ public class PerformanceService {
                 .filter(performance -> performance.getLocation().getId().equals(location.getId()));
     }
 
+    @RolesAllowed(UserRoles.USER)
     public void create(Performance performance, UUID artistId, UUID locationId) {
 
         Artist artist = artistService.find(artistId).orElseThrow(() -> new NotFoundException("Artist not found: " + artistId));
@@ -71,9 +107,12 @@ public class PerformanceService {
         locationService.update(location);
     }
 
+    @RolesAllowed(UserRoles.USER)
     public void update(Performance performance, UUID initialLocation) {
-        Artist artist = artistService.find(performance.getArtist().getId())
-                .orElseThrow(() -> new NotFoundException("Artist not found: " + performance.getArtist().getId()));
+        Performance existingPerformance = performanceRepository.find(performance.getId())
+                .orElseThrow(() -> new NotFoundException("Performance not found: " + performance.getId()));
+
+        checkAdminRoleOrOwner(Optional.of(existingPerformance));
 
         Location newLocation = locationService.find(performance.getLocation().getId())
                 .orElseThrow(() -> new NotFoundException("Location not found: " + performance.getLocation().getId()));
@@ -82,26 +121,32 @@ public class PerformanceService {
             Location oldLocation = locationService.find(initialLocation)
                     .orElseThrow(() -> new NotFoundException("Initial location not found: " + initialLocation));
 
-            oldLocation.getPerformances().removeIf(oldLocationPerformance -> oldLocationPerformance.getId().equals(performance.getId()));
+            oldLocation.getPerformances().removeIf(f -> f.getId().equals(existingPerformance.getId()));
             locationService.update(oldLocation);
         }
 
-        boolean artistPerformanceUpdated = artist.getPerformances().removeIf(artistPerformance -> artistPerformance.getId().equals(performance.getId()));
-        if (artistPerformanceUpdated) {
-            artist.getPerformances().add(performance);
-        } else {
-            throw new NotFoundException("Performance not found in artist's performances: " + performance.getId());
-        }
+        existingPerformance.setDate(performance.getDate());
+        existingPerformance.setPerformanceType(performance.getPerformanceType());
+        existingPerformance.setLocation(newLocation);
 
-        newLocation.getPerformances().removeIf(locationPerformance -> locationPerformance.getId().equals(performance.getId()));
-        newLocation.getPerformances().add(performance);
-
-        artistService.update(artist);
+        artistService.update(existingPerformance.getArtist());
         locationService.update(newLocation);
-        performanceRepository.update(performance);
+
+        performanceRepository.update(existingPerformance);
     }
 
+
+    @RolesAllowed(UserRoles.USER)
+    public void createForCallerPrincipal(Performance performance) {
+        Artist artist = artistRepository.findByLastName(securityContext.getCallerPrincipal().getName()).orElseThrow(IllegalStateException::new);
+        performance.setArtist(artist);
+        performanceRepository.create(performance);
+    }
+
+    @RolesAllowed(UserRoles.USER)
     public void delete(UUID id) {
+        checkAdminRoleOrOwner(performanceRepository.find(id));
+
         Performance performance = performanceRepository.find(id)
                 .orElseThrow(NotFoundException::new);
 
@@ -127,5 +172,18 @@ public class PerformanceService {
     public Optional<List<Performance>> findAllByLocation(UUID id) {
         return locationService.find(id)
                 .map(performanceRepository::findAllByLocation);
+    }
+
+
+    private void checkAdminRoleOrOwner(Optional<Performance> performance) throws EJBAccessException {
+        if (securityContext.isCallerInRole(UserRoles.ADMIN)) {
+            return;
+        }
+        if (securityContext.isCallerInRole(UserRoles.USER)
+                && performance.isPresent()
+                && performance.get().getArtist().getLastName().equals(securityContext.getCallerPrincipal().getName())) {
+            return;
+        }
+        throw new EJBAccessException("Caller not authorized.");
     }
 }

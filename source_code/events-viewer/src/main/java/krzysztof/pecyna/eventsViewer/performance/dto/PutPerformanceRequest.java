@@ -21,4 +21,6 @@ public class PutPerformanceRequest {
     private UUID location;
 
     private UUID artist;
+
+    private Long version;
 }

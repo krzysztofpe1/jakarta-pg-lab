@@ -1,5 +1,6 @@
 package krzysztof.pecyna.eventsViewer.performance.view;
 
+import jakarta.ejb.EJB;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -23,13 +24,14 @@ import java.util.UUID;
 @Named
 public class PerformanceCreate implements Serializable {
 
-    private final PerformanceService performanceService;
+
+    private PerformanceService performanceService;
 
     private final ModelFunctionFactory factory;
 
-    private final ArtistService artistService;
+    private ArtistService artistService;
 
-    private final LocationService locationService;
+    private LocationService locationService;
 
     @Setter
     @Getter
@@ -42,15 +44,28 @@ public class PerformanceCreate implements Serializable {
     @Getter
     private List<LocationModel> locations;
 
-    private static final UUID TEMP_ARTIST_ID = UUID.fromString("396457c5-3f20-49f1-8a7c-755a8d2f0b10");
+    private static final UUID TEMP_ARTIST_ID = UUID.fromString("d9f823f4-f057-4f18-aeb7-b6654bc3d310");
 
     @Inject
-    public PerformanceCreate(PerformanceService performanceService, ModelFunctionFactory factory, ArtistService artistService, LocationService locationService) {
-        this.performanceService = performanceService;
+    public PerformanceCreate(ModelFunctionFactory factory) {
         this.factory = factory;
+    }
+
+    @EJB
+    public void setArtistService(ArtistService artistService) {
         this.artistService = artistService;
+    }
+
+    @EJB
+    public void setPerformanceService(PerformanceService performanceService) {
+        this.performanceService = performanceService;
+    }
+
+    @EJB
+    public void setLocationService(LocationService locationService) {
         this.locationService = locationService;
     }
+
 
     public void init() throws IOException {
         Artist tempArtist = this.artistService.find(TEMP_ARTIST_ID).get();

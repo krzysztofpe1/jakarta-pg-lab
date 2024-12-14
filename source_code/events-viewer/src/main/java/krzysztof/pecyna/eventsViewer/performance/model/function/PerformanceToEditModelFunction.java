@@ -22,6 +22,7 @@ public class PerformanceToEditModelFunction implements Function<Performance, Per
                         .locationType(performance.getLocation().getLocationType())
                         .performances(performance.getLocation().getPerformances())
                         .build())
+                .version(performance.getVersion())
                 .build();
     }
 }

@@ -1,5 +1,6 @@
 package krzysztof.pecyna.eventsViewer.performance.view;
 
+import jakarta.ejb.EJB;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
@@ -20,7 +21,7 @@ import java.util.UUID;
 @ViewScoped
 @Named
 public class PerformanceView implements Serializable {
-    private final PerformanceService performanceService;
+    private PerformanceService performanceService;
 
     private final ModelFunctionFactory factory;
 
@@ -32,9 +33,13 @@ public class PerformanceView implements Serializable {
     private PerformanceModel performance;
 
     @Inject
-    public PerformanceView(PerformanceService performanceService, ModelFunctionFactory factory) {
-        this.performanceService = performanceService;
+    public PerformanceView(ModelFunctionFactory factory) {
         this.factory = factory;
+    }
+
+    @EJB
+    public void setPerformanceService(PerformanceService performanceService) {
+        this.performanceService = performanceService;
     }
 
     public void init() throws IOException {
@@ -45,6 +50,4 @@ public class PerformanceView implements Serializable {
             FacesContext.getCurrentInstance().getExternalContext().responseSendError(HttpServletResponse.SC_NOT_FOUND, "Performance not found!!!");
         }
     }
-
-
 }

@@ -1,4 +1,4 @@
-package krzysztof.pecyna.eventsViewer.performance.model.function;
+package krzysztof.pecyna.eventsViewer.performance.dto.function;
 
 import krzysztof.pecyna.eventsViewer.location.entity.Location;
 import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
@@ -15,18 +15,16 @@ public class UpdatePerformanceWithModelFunction implements BiFunction<Performanc
     public Performance apply(Performance performance, PerformanceEditModel request) {
         return Performance.builder()
                 .id(performance.getId())
-                .date(request.getDate())
-                .performanceType(request.getPerformanceType())
                 .artist(performance.getArtist())
+                .performanceType(performance.getPerformanceType())
+                .date(performance.getDate())
                 .location(Location.builder()
                         .id(request.getLocation().getId())
                         .streetAddress(request.getLocation().getStreetAddress())
-                        .maximumAudienceCapacity(request.getLocation().getMaximumAudienceCapacity())
                         .locationType(request.getLocation().getLocationType())
+                        .maximumAudienceCapacity(request.getLocation().getMaximumAudienceCapacity())
                         .performances(request.getLocation().getPerformances())
                         .build())
-                .version(request.getVersion())
-                .creationDateTime(performance.getCreationDateTime())
                 .build();
     }
 }

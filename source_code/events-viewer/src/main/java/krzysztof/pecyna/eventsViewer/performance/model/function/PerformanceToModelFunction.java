@@ -14,6 +14,8 @@ public class PerformanceToModelFunction implements Function<Performance, Perform
                 .id(performance.getId())
                 .date(performance.getDate())
                 .performanceType(performance.getPerformanceType())
+                .version(performance.getVersion())
+                .creationDateTime(performance.getCreationDateTime())
                 .build();
     }
 }

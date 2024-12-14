@@ -1,29 +1,35 @@
 package krzysztof.pecyna.eventsViewer.performance.controller.rest;
 
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.ejb.EJB;
+import jakarta.ejb.EJBAccessException;
+import jakarta.ejb.EJBException;
 import jakarta.inject.Inject;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.NotAllowedException;
-import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.WebApplicationException;
+import jakarta.transaction.TransactionalException;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
-import jakarta.ws.rs.Path;
+import krzysztof.pecyna.eventsViewer.artist.entity.UserRoles;
 import krzysztof.pecyna.eventsViewer.component.DtoFunctionFactory;
 import krzysztof.pecyna.eventsViewer.performance.controller.api.PerformanceController;
 import krzysztof.pecyna.eventsViewer.performance.dto.GetPerformanceResponse;
 import krzysztof.pecyna.eventsViewer.performance.dto.GetPerformancesResponse;
 import krzysztof.pecyna.eventsViewer.performance.dto.PatchPerformanceRequest;
 import krzysztof.pecyna.eventsViewer.performance.dto.PutPerformanceRequest;
-import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
 import krzysztof.pecyna.eventsViewer.performance.service.PerformanceService;
+import lombok.extern.java.Log;
 
 
 import java.util.UUID;
+import java.util.logging.Level;
 
 @Path("")
+@Log
 public class PerformanceRestController implements PerformanceController {
-    private final PerformanceService performanceService;
+    private PerformanceService performanceService;
 
     private final DtoFunctionFactory factory;
 
@@ -37,12 +43,16 @@ public class PerformanceRestController implements PerformanceController {
     }
 
     @Inject
-    public PerformanceRestController(PerformanceService performanceService, DtoFunctionFactory factory, @SuppressWarnings("CdiInjectionPointsInspection") UriInfo uriInfo) {
-        this.performanceService = performanceService;
+    public PerformanceRestController(DtoFunctionFactory factory, @SuppressWarnings("CdiInjectionPointsInspection") UriInfo uriInfo) {
         this.factory = factory;
         this.uriInfo = uriInfo;
-
     }
+
+    @EJB
+    public void setPerformanceService(PerformanceService performanceService) {
+        this.performanceService = performanceService;
+    }
+
 
     @Override
     public GetPerformancesResponse getArtistPerformances(UUID id) {
@@ -51,6 +61,7 @@ public class PerformanceRestController implements PerformanceController {
                 .orElseThrow(() -> new NotFoundException("Artist not found"));
     }
 
+    @RolesAllowed(UserRoles.ADMIN)
     @Override
     public GetPerformancesResponse getLocationPerformances(UUID id) {
         return performanceService.findAllByLocation(id)
@@ -58,39 +69,56 @@ public class PerformanceRestController implements PerformanceController {
                 .orElseThrow(() -> new NotFoundException("Location not found"));
     }
 
+    @RolesAllowed(UserRoles.USER)
     @Override
     public GetPerformanceResponse getLocationPerformance(UUID locationId, UUID performanceId) {
-        return performanceService.findByLocationAndPerformance(locationId, performanceId)
-                .map(factory.performanceToResponse())
-                .orElseThrow(() -> new NotFoundException("Performance not found in the specified location"));
+        try {
+            return performanceService.findForCallerPrincipal(locationId, performanceId)
+                    .map(factory.performanceToResponse())
+                    .orElseThrow(() -> new NotFoundException("Performance not found in the specified location"));
+        } catch (EJBAccessException e) {
+            throw new ForbiddenException("Forbidden access!");
+        }
     }
 
     @Override
     public void putLocationPerformance(UUID locationId, UUID performanceId, PutPerformanceRequest request) {
         try {
             request.setLocation(locationId);
-            Performance performance = factory.requestToPerformance().apply(performanceId, request);
-            performanceService.create(performance, request.getArtist(), locationId);
-
+            performanceService.createForCallerPrincipal(factory.requestToPerformance().apply(performanceId, request));
             response.setHeader("Location", uriInfo.getBaseUriBuilder()
                     .path(PerformanceController.class, "getPerformance")
                     .build(performanceId)
                     .toString());
             throw new WebApplicationException(Response.Status.CREATED);
-        } catch (IllegalArgumentException ex) {
-            throw new NotAllowedException("Performance already exists, to update performance use PATCH method");
+        } catch (EJBException ex) {
+            if (ex.getCause() instanceof IllegalArgumentException) {
+                log.log(Level.WARNING, ex.getMessage(), ex);
+                throw new BadRequestException("Performance already exists, to update performance use PATCH method");
+            }
+            throw ex;
         } catch (NotFoundException ex) {
             throw new NotFoundException(ex.getMessage());
+        } catch (TransactionalException ex) {
+            if (ex.getCause() instanceof OptimisticLockException) {
+                throw new BadRequestException(ex.getCause());
+            }
         }
     }
 
     @Override
     public void patchLocationPerformance(UUID locationId, UUID performanceId, PatchPerformanceRequest request) {
-        performanceService.findByLocationAndPerformance(locationId, performanceId).ifPresentOrElse(
-                entity -> performanceService.update(factory.updatePerformance().apply(entity, request), locationId),
-                () -> {
-                    throw new NotFoundException("Performance not found in the specified location");
-                });
+        try {
+            performanceService.findByLocationAndPerformance(locationId, performanceId).ifPresentOrElse(
+                    entity -> performanceService.update(factory.updatePerformance().apply(entity, request), locationId),
+                    () -> {
+                        throw new NotFoundException("Performance not found in the specified location");
+                    });
+        } catch (TransactionalException ex) {
+            if (ex.getCause() instanceof OptimisticLockException) {
+                throw new BadRequestException(ex.getCause());
+            }
+        }
     }
 
     @Override
@@ -102,9 +130,10 @@ public class PerformanceRestController implements PerformanceController {
                 });
     }
 
+    @RolesAllowed(UserRoles.ADMIN)
     @Override
     public GetPerformancesResponse getPerformances() {
-        return factory.performancesToResponse().apply(performanceService.findAll());
+        return factory.performancesToResponse().apply(performanceService.findAllForCallerPrincipal());
     }
 
     @Override
@@ -113,5 +142,4 @@ public class PerformanceRestController implements PerformanceController {
                 .map(factory.performanceToResponse())
                 .orElseThrow(() -> new NotFoundException("Performance not found"));
     }
-
 }
