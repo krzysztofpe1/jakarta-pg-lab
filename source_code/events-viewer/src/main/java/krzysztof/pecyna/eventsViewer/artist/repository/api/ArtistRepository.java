@@ -7,6 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ArtistRepository extends Repository<Artist, UUID> {
-    Optional<Artist> findByName(String name);
+    Optional<Artist> findByLastName(String findByLastName);
 
 }

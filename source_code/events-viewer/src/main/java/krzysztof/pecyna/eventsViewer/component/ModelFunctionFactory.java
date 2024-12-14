@@ -1,6 +1,8 @@
 package krzysztof.pecyna.eventsViewer.component;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import krzysztof.pecyna.eventsViewer.artist.model.function.ArtistToModelFunction;
+import krzysztof.pecyna.eventsViewer.artist.model.function.ArtistsToModelFunction;
 import krzysztof.pecyna.eventsViewer.location.model.function.*;
 import krzysztof.pecyna.eventsViewer.performance.model.function.UpdatePerformanceWithModelFunction;
 import krzysztof.pecyna.eventsViewer.performance.model.function.*;
@@ -38,5 +40,12 @@ public class ModelFunctionFactory {
 
     public UpdatePerformanceWithModelFunction updatePerformance() {
         return new UpdatePerformanceWithModelFunction();
+    }
+
+    public ArtistToModelFunction artistToModel() {
+        return new ArtistToModelFunction();
+    }
+    public ArtistsToModelFunction artistsToModel() {
+        return new ArtistsToModelFunction();
     }
 }

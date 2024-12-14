@@ -21,7 +21,7 @@ public class ArtistPersistenceRepository implements ArtistRepository {
     }
 
     @Override
-    public Optional<Artist> findByName(String lastName) {
+    public Optional<Artist> findByLastName(String lastName) {
         try {
             return Optional.of(em.createQuery("select u from Artist u where u.lastName = :lastName", Artist.class)
                     .setParameter("lastName", lastName)
