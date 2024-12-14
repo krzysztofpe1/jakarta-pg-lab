@@ -1,9 +1,8 @@
-package krzysztof.pecyna.eventsViewer.artist.dto;
+package krzysztof.pecyna.eventsViewer.artist.model;
 
 import lombok.*;
 
-import java.time.LocalDate;
-
+import java.util.UUID;
 @Getter
 @Setter
 @Builder
@@ -11,12 +10,10 @@ import java.time.LocalDate;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
-public class PutArtistRequest {
+public class ArtistModel {
+    private UUID id;
+
     private String firstName;
 
     private String lastName;
-
-    private String password;
-
-    private LocalDate accountCreation;
 }

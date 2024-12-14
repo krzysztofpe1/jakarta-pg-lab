@@ -2,8 +2,10 @@ package krzysztof.pecyna.eventsViewer.artist.dto.function;
 
 import krzysztof.pecyna.eventsViewer.artist.dto.PutArtistRequest;
 import krzysztof.pecyna.eventsViewer.artist.entity.Artist;
+import krzysztof.pecyna.eventsViewer.artist.entity.UserRoles;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.BiFunction;
 
@@ -14,6 +16,8 @@ public class RequestToArtistFunction implements BiFunction<UUID, PutArtistReques
                 .id(id)
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
+                .password(request.getPassword())
+                .roles(List.of(UserRoles.USER))
                 .performances((Collections.emptyList()))
                 .build();
     }

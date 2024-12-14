@@ -1,36 +1,63 @@
-package krzysztof.pecyna.eventsViewer.artist.controller.simple;
+package krzysztof.pecyna.eventsViewer.artist.controller.rest;
 
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.ejb.EJB;
+import jakarta.ejb.EJBException;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 import krzysztof.pecyna.eventsViewer.artist.controller.api.ArtistController;
 import krzysztof.pecyna.eventsViewer.artist.dto.GetArtistResponse;
 import krzysztof.pecyna.eventsViewer.artist.dto.GetArtistsResponse;
 import krzysztof.pecyna.eventsViewer.artist.dto.PatchArtistRequest;
 import krzysztof.pecyna.eventsViewer.artist.dto.PutArtistRequest;
+import krzysztof.pecyna.eventsViewer.artist.entity.UserRoles;
 import krzysztof.pecyna.eventsViewer.artist.service.ArtistService;
 import krzysztof.pecyna.eventsViewer.component.DtoFunctionFactory;
 import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.NotAllowedException;
+import lombok.extern.java.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.logging.Level;
 
-@RequestScoped
-public class ArtistSimpleController implements ArtistController {
+@jakarta.ws.rs.Path("")
+@Log
+@RolesAllowed(UserRoles.USER)
+public class ArtistRestController implements ArtistController {
 
-    private final ArtistService artistService;
+    private ArtistService artistService;
 
     private final DtoFunctionFactory factory;
 
+    private final UriInfo uriInfo;
+
+    private HttpServletResponse response;
+
+    @Context
+    public void setResponse(HttpServletResponse response) {
+        this.response = response;
+    }
+
     @Inject
-    public ArtistSimpleController(DtoFunctionFactory factory, ArtistService artistService) {
+    public ArtistRestController(DtoFunctionFactory factory, @SuppressWarnings("CdiInjectionPointsInspection") UriInfo uriInfo) {
         this.factory = factory;
+        this.uriInfo = uriInfo;
+    }
+
+    @EJB
+    public void setArtistService(ArtistService artistService) {
         this.artistService = artistService;
     }
+
 
     @Override
     public GetArtistResponse getArtist(UUID id) {
@@ -44,36 +71,45 @@ public class ArtistSimpleController implements ArtistController {
         return factory.artistsToResponse().apply(artistService.findAll());
     }
 
+    @PermitAll
     @Override
     public void putArtist(UUID id, PutArtistRequest request) {
         try {
             artistService.create(factory.requestToArtist().apply(id, request));
-        } catch (IllegalArgumentException ex) {
-            throw new NotAllowedException("Artist already exists, to update artist use PATCH method");
+            response.setHeader("Location", uriInfo.getBaseUriBuilder()
+                    .path(ArtistController.class, "getArtist")
+                    .build(id)
+                    .toString());
+            throw new WebApplicationException(Response.Status.CREATED);
+        } catch (EJBException ex) {
+            if (ex.getCause() instanceof IllegalArgumentException) {
+                log.log(Level.WARNING, ex.getMessage(), ex);
+                throw new BadRequestException("Artist already exists, to update artist use PATCH method");
+            }
+            throw ex;
         }
     }
 
     @Override
     public void patchArtist(UUID id, PatchArtistRequest request) {
-        artistService.find(id).ifPresentOrElse(entity -> artistService.update(factory.updateArtist().apply(entity, request)), () -> {
-            throw new NotFoundException("Artist not found, to create artist use PUT method");
-        });
+        artistService.find(id)
+                .ifPresentOrElse(entity -> artistService.update(factory.updateArtist().apply(entity, request)), () -> {
+                    throw new NotFoundException("Artist not found");
+                });
 
     }
 
     @Override
     public void deleteArtist(UUID id) {
-        artistService.find(id).ifPresentOrElse(
-                entity -> artistService.delete(id),
-                () -> {
-                    throw new NotFoundException("Artist not found");
-                }
-        );
+        artistService.find(id).ifPresentOrElse(entity -> artistService.delete(id), () -> {
+            throw new NotFoundException("Fraction not found");
+        });
     }
 
     @Override
     public byte[] getArtistAvatar(UUID id, String pathToAvatars) {
-        Path pathToAvatar = Paths.get(
+
+        java.nio.file.Path pathToAvatar = Paths.get(
                 pathToAvatars,
                 artistService.find(id)
                         .map(artist -> artist.getId().toString())
@@ -107,7 +143,7 @@ public class ArtistSimpleController implements ArtistController {
         artistService.find(id).ifPresentOrElse(
                 artist -> {
                     try {
-                        Path avatarPath = Paths.get(pathToAvatars, artist.getId().toString() + ".png");
+                        java.nio.file.Path avatarPath = Paths.get(pathToAvatars, artist.getId().toString() + ".png");
                         if (!Files.exists(avatarPath)) {
                             throw new NotFoundException("Artist avatar does not exist");
                         }
@@ -131,5 +167,4 @@ public class ArtistSimpleController implements ArtistController {
                 }
         );
     }
-
 }
