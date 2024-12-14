@@ -1,5 +1,8 @@
 package krzysztof.pecyna.eventsViewer.location.entity;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -24,5 +27,8 @@ public class Location implements Serializable {
 
     private LocationType locationType;
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "location", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Performance> performances;
+
 }

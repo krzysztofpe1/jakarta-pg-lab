@@ -1,14 +1,15 @@
 package krzysztof.pecyna.eventsViewer.location.controller.rest;
 
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.ejb.EJB;
+import jakarta.ejb.EJBException;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.NotAllowedException;
-import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+import krzysztof.pecyna.eventsViewer.artist.entity.UserRoles;
 import krzysztof.pecyna.eventsViewer.component.DtoFunctionFactory;
 import krzysztof.pecyna.eventsViewer.location.controller.api.LocationController;
 import krzysztof.pecyna.eventsViewer.location.dto.GetLocationResponse;
@@ -16,12 +17,16 @@ import krzysztof.pecyna.eventsViewer.location.dto.GetLocationsResponse;
 import krzysztof.pecyna.eventsViewer.location.dto.PatchLocationRequest;
 import krzysztof.pecyna.eventsViewer.location.dto.PutLocationRequest;
 import krzysztof.pecyna.eventsViewer.location.service.LocationService;
+import lombok.extern.java.Log;
 
 import java.util.UUID;
+import java.util.logging.Level;
 
 @Path("")
+@Log
+@RolesAllowed({UserRoles.ADMIN, UserRoles.USER})
 public class LocationRestController implements LocationController {
-    private final LocationService locationService;
+    private LocationService locationService;
 
     private final DtoFunctionFactory factory;
 
@@ -35,10 +40,14 @@ public class LocationRestController implements LocationController {
     }
 
     @Inject
-    public LocationRestController(final LocationService locationService, final DtoFunctionFactory factory, @SuppressWarnings("CdiInjectionPointsInspection") UriInfo uriInfo) {
+    public LocationRestController(DtoFunctionFactory factory, @SuppressWarnings("CdiInjectionPointsInspection") UriInfo uriInfo) {
         this.factory = factory;
-        this.locationService = locationService;
         this.uriInfo = uriInfo;
+    }
+
+    @EJB
+    public void setLocationService(LocationService locationService) {
+        this.locationService = locationService;
     }
 
     @Override
@@ -52,7 +61,7 @@ public class LocationRestController implements LocationController {
     public GetLocationsResponse getLocations() {
         return factory.locationsToResponse().apply(locationService.findAll());
     }
-
+    @RolesAllowed("admin")
     @Override
     public void putLocation(UUID id, PutLocationRequest request) {
         try {
@@ -62,8 +71,12 @@ public class LocationRestController implements LocationController {
                     .build(id)
                     .toString());
             throw new WebApplicationException(Response.Status.CREATED);
-        } catch (IllegalArgumentException ex) {
-            throw new NotAllowedException("Location already exists, to update location use PATCH method");
+        } catch (EJBException ex) {
+            if (ex.getCause() instanceof IllegalArgumentException) {
+                log.log(Level.WARNING, ex.getMessage(), ex);
+                throw new BadRequestException("Location already exists, to update location use PATCH method");
+            }
+            throw ex;
         }
     }
 
@@ -74,7 +87,7 @@ public class LocationRestController implements LocationController {
                     throw new NotFoundException("Location not found");
                 });
     }
-
+    @RolesAllowed(UserRoles.ADMIN)
     @Override
     public void deleteLocation(UUID id) {
         locationService.find(id).ifPresentOrElse(entity -> locationService.delete(id), () -> {

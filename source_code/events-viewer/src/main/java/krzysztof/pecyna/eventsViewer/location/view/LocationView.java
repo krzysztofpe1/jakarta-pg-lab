@@ -1,5 +1,6 @@
 package krzysztof.pecyna.eventsViewer.location.view;
 
+import jakarta.ejb.EJB;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
@@ -21,11 +22,11 @@ import java.util.UUID;
 @ViewScoped
 @Named
 public class LocationView implements Serializable {
-    private final LocationService locationService;
+    private LocationService locationService;
 
     private final ModelFunctionFactory factory;
 
-    private final PerformanceService performanceService;
+    private PerformanceService performanceService;
 
     @Setter
     @Getter
@@ -35,9 +36,17 @@ public class LocationView implements Serializable {
     private LocationModel location;
 
     @Inject
-    public LocationView(LocationService locationService, ModelFunctionFactory factory, PerformanceService performanceService) {
-        this.locationService = locationService;
+    public LocationView(ModelFunctionFactory factory) {
         this.factory = factory;
+    }
+
+    @EJB
+    public void setLocationService(LocationService locationService) {
+        this.locationService = locationService;
+    }
+
+    @EJB
+    public void setPerformanceService(PerformanceService performanceService) {
         this.performanceService = performanceService;
     }
 
@@ -50,10 +59,10 @@ public class LocationView implements Serializable {
         }
     }
 
-    public String deletePerformance(UUID id) {
-        performanceService.delete(id);
+    public String deletePerformance(UUID userId) {
+        performanceService.delete(userId);
         String viewId = FacesContext.getCurrentInstance().getViewRoot().getViewId();
-        return viewId.isEmpty() ? "" : viewId + "?faces-redirect=true&includeViewParams=true";
+        return viewId + "?faces-redirect=true&includeViewParams=true";
     }
 
 }

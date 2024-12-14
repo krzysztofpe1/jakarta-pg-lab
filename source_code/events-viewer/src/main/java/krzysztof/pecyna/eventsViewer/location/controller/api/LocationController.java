@@ -1,6 +1,5 @@
 package krzysztof.pecyna.eventsViewer.location.controller.api;
 
-
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import krzysztof.pecyna.eventsViewer.location.dto.GetLocationResponse;
@@ -9,7 +8,7 @@ import krzysztof.pecyna.eventsViewer.location.dto.PutLocationRequest;
 import krzysztof.pecyna.eventsViewer.location.dto.PatchLocationRequest;
 
 import java.util.UUID;
-
+@Path("")
 public interface LocationController {
     @GET
     @Path("/locations/{id}")
