@@ -6,8 +6,9 @@
                 template="/WEB-INF/template/main.xhtml">
 
     <ui:define name="content">
+        <f:loadBundle var="msg" basename="krzysztof.pecyna.eventsViewer.view.all.i18n.messages"/>
         <article class="text--justified">
-            <header><h2>Locations:</h2></header>
+            <header><h2>#{msg.locations}::</h2></header>
             <h:dataTable value="#{locationList.locations.locations}" var="location">
                 <h:column>
                     <h:link outcome="/location/location_view.xhtml">
@@ -16,9 +17,10 @@
                     </h:link>
                 </h:column>
                 <h:column>
-                    <h:form>
-                        <h:commandButton class="button" value="Delete"
-                                         action="#{locationList.deleteAction(location)}"/>
+                    <h:form rendered="#{facesContext.externalContext.isUserInRole('admin')}">
+                        <h:commandButton styleClass="btn" value="Delete"
+                                         action="#{locationList.deleteAction(location)}"
+                                         rendered="#{facesContext.externalContext.isUserInRole('admin')}"/>
                     </h:form>
                 </h:column>
             </h:dataTable>

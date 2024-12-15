@@ -7,6 +7,7 @@ import jakarta.ejb.EJBException;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.Path;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
@@ -29,7 +30,7 @@ import java.nio.file.Paths;
 import java.util.UUID;
 import java.util.logging.Level;
 
-@jakarta.ws.rs.Path("")
+@Path("")
 @Log
 @RolesAllowed(UserRoles.USER)
 public class ArtistRestController implements ArtistController {
@@ -102,7 +103,7 @@ public class ArtistRestController implements ArtistController {
     @Override
     public void deleteArtist(UUID id) {
         artistService.find(id).ifPresentOrElse(entity -> artistService.delete(id), () -> {
-            throw new NotFoundException("Fraction not found");
+            throw new NotFoundException("Artist not found");
         });
     }
 

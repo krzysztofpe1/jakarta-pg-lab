@@ -33,5 +33,6 @@ public interface LocationController {
     @DELETE
     @Path("/locations/{id}")
     void deleteLocation(@PathParam("id") UUID id);
+
 }
  

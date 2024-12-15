@@ -36,7 +36,7 @@ public class Artist implements Serializable {
     private List<String> roles;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "performance", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Performance> performances;
 
     private LocalDate accountCreation;

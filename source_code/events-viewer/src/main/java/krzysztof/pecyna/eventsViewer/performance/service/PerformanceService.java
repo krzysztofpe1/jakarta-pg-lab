@@ -164,14 +164,14 @@ public class PerformanceService {
         performanceRepository.delete(performance);
     }
 
+    @RolesAllowed(UserRoles.USER)
     public Optional<List<Performance>> findAllByArtist(UUID id) {
         return artistService.find(id)
                 .map(performanceRepository::findAllByArtist);
     }
 
-    public Optional<List<Performance>> findAllByLocation(UUID id) {
-        return locationService.find(id)
-                .map(performanceRepository::findAllByLocation);
+    public Optional<List<Performance>> findAllByLocation(UUID locationId) {
+        return Optional.ofNullable(performanceRepository.findAllByLocation(locationId));
     }
 
 

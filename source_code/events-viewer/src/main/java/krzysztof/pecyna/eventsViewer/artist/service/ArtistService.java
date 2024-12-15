@@ -23,7 +23,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.NotAllowedException;
 import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
 import krzysztof.pecyna.eventsViewer.performance.service.PerformanceService;
@@ -54,7 +53,7 @@ public class ArtistService {
     }
     @PermitAll
     public Optional<Artist> find(String name) {
-        return artistRepository.findByName(name);
+        return artistRepository.findByLastName(name);
     }
     @PermitAll
     public List<Artist> findAll() {

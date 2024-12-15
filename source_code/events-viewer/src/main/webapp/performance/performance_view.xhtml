@@ -11,6 +11,7 @@
     </f:metadata>
 
     <ui:define name="content">
+        <f:loadBundle var="msg" basename="krzysztof.pecyna.eventsViewer.view.all.i18n.messages"/>
         <header>
             <h2>
                 <h:outputText value="#{performanceView.performance.date}"/>
@@ -18,12 +19,12 @@
         </header>
         <main>
             <div>
-                Performance type:
+                #{msg.performance_type}:
                 <h:outputText value="#{performanceView.performance.performanceType}"/>
             </div>
 
             <h:column>
-                <f:facet name="header">Edit</f:facet>
+                <f:facet name="header">#{msg.edit}</f:facet>
                 <h:link outcome="/performance/performance_edit.xhtml" value="Edit">
                     <f:param name="id" value="#{performanceView.performance.id}"/>
                 </h:link>

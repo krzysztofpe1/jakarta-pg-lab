@@ -10,27 +10,29 @@
     </f:metadata>
 
     <ui:define name="content">
+        <f:loadBundle var="msg" basename="krzysztof.pecyna.eventsViewer.view.all.i18n.messages"/>
         <article>
-            <header><h2>Create performance</h2></header>
+            <header><h2>{msg.create_performance}</h2></header>
             <h:form styleClass="container" onreset="onReset()" enctype="multipart/form-data">
 
                 <div>
-                    <h:outputLabel for="date" value="date:" styleClass="form-label"/>
+                    <h:outputLabel for="date" value="#{msg.date}:" styleClass="form-label"/>
                     <h:inputText id="date" value="#{performanceCreate.performance.date}" type="date" converter="localDateConverter"/>
+                    <h:message for="date"/>
                 </div>
 
                 <div>
-                    <h:outputLabel for="performanceType" value="Performance type:"/>
+                    <h:outputLabel for="performanceType" value="#{msg.performance_type}:"/>
                     <h:inputText id="performanceType" value="#{performanceCreate.performance.performanceType}" />
-
+                    <h:message for="performanceType"/>
                 </div>
 
                 <div>
-                    <p style="margin: 5px 0">Choose location:</p>
+                    <p style="margin: 5px 0">#{msg.choose_location}</p>
                     <ui:repeat value="#{performanceCreate.locations}" var="location">
                         <div class="form-check">
                             <h:selectOneRadio id="radioId" group="location"
-                                              value="#{performanceCreate.performance.location}">
+                                              value="#{performanceCreate.performance.location}" required="true" binding="#{locationInput}">
                                 <f:selectItem itemValue="#{location}" itemLabel="#{location.streetAddress}"/>
                             </h:selectOneRadio>
                         </div>

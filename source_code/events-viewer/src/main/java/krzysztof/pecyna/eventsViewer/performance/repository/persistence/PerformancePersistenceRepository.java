@@ -33,8 +33,8 @@ public class PerformancePersistenceRepository implements PerformanceRepository {
     }
 
     @Override
-    public List<Performance> findAllByLocation(Location location) {
-        return em.createQuery("select u from Performance u where u.location = :location", Performance.class)
+    public List<Performance> findAllByLocation(UUID location) {
+        return em.createQuery("select u from Performance u where u.location.id = :location", Performance.class)
                 .setParameter("location", location)
                 .getResultList();
     }

@@ -1,8 +1,6 @@
 package krzysztof.pecyna.eventsViewer.location.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -16,9 +14,12 @@ import java.util.UUID;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString
-@EqualsAndHashCode
+@ToString(callSuper = true)
+@EqualsAndHashCode(exclude = "performances")
+@Entity
+@Table(name = "locations")
 public class Location implements Serializable {
+    @Id
     private UUID id;
 
     private String streetAddress;

@@ -3,6 +3,7 @@ package krzysztof.pecyna.eventsViewer.location.repository.persistence;
 import jakarta.enterprise.context.Dependent;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import krzysztof.pecyna.eventsViewer.artist.entity.Artist;
 import krzysztof.pecyna.eventsViewer.location.entity.Location;
 import krzysztof.pecyna.eventsViewer.location.repository.api.LocationRepository;
 

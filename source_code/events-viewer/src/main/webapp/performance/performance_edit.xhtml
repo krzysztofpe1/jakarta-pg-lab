@@ -11,11 +11,18 @@
     </f:metadata>
 
     <ui:define name="content">
+        <f:loadBundle var="msg" basename="krzysztof.pecyna.eventsViewer.view.all.i18n.messages"/>
         <article>
-            <header><h2>Edit performance</h2></header>
+            <header><h2>#{msg.edit_performance}</h2></header>
             <h:form onreset="onReset()" enctype="multipart/form-data">
+                <h:inputHidden value="#{performanceEdit.performance.version}" />
                 <div>
-                    <h:outputText id="date" value="#{performanceEdit.performance.date}" />
+                    <h:messages/>
+                </div>
+                <div>
+                    <h:outputText id="date" value="#{performanceEdit.performance.date}">
+                        <f:convertDateTime type="localDate" pattern="yyyy-MM-dd"/>
+                    </h:outputText>
                 </div>
 
                 <div>

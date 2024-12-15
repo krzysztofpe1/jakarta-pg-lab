@@ -59,6 +59,7 @@ public class LocationRestController implements LocationController {
 
     @Override
     public GetLocationsResponse getLocations() {
+        System.out.println(factory.locationsToResponse().apply(locationService.findAll()));
         return factory.locationsToResponse().apply(locationService.findAll());
     }
     @RolesAllowed("admin")

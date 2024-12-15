@@ -44,7 +44,7 @@ public class PerformanceCreate implements Serializable {
     @Getter
     private List<LocationModel> locations;
 
-    private static final UUID TEMP_ARTIST_ID = UUID.fromString("d9f823f4-f057-4f18-aeb7-b6654bc3d310");
+    private static final UUID TEMP_ARTIST_ID = UUID.fromString("396457c5-3f20-49f1-8a7c-755a8d2f0b10");
 
     @Inject
     public PerformanceCreate(ModelFunctionFactory factory) {

@@ -3,6 +3,7 @@ package krzysztof.pecyna.eventsViewer.artist.dto;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -18,5 +19,5 @@ public class PutArtistRequest {
 
     private String password;
 
-    private LocalDate accountCreation;
+    private LocalDateTime accountCreation;
 }

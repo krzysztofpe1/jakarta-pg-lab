@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <server description="defaultServer">
 
     <featureManager>
@@ -6,15 +7,32 @@
         <feature>cdi-4.0</feature>
         <feature>faces-4.0</feature>
         <feature>restfulWS-3.1</feature>
+        <feature>persistence-3.1</feature>
+        <feature>enterpriseBeans-4.0</feature>
+        <feature>appSecurity-5.0</feature>
+        <feature>beanValidation-3.0</feature>
     </featureManager>
 
-    <basicRegistry id="defaultBasicRegistry" realm="BasicRealm">
-        <user name="username" password="password" />
-    </basicRegistry>
+    <application type="war" location="eventViewer.war">
+        <application-bnd>
+            <security-role name="admin">
+                <group name="admin" access-id="group:jdbc/EventViewer/admin"/>
+                <run-as userid="admin-service" />
+            </security-role>
+            <security-role name="user">
+                <group name="user" access-id="group:jdbc/EventViewer/user"/>
+            </security-role>
+        </application-bnd>
+    </application>
+    <dataSource id="EventViewerSource" jndiName="jdbc/EventViewer">
+        <jdbcDriver javax.sql.XADataSource="org.h2.jdbcx.JdbcDataSource"
+                    javax.sql.ConnectionPoolDataSource="org.h2.jdbcx.JdbcDataSource"
+                    javax.sql.DataSource="org.h2.jdbcx.JdbcDataSource"
+                    libraryRef="H2JDBCLib"/>
+        <properties URL="jdbc:h2:mem:eventViewer"/>
+    </dataSource>
 
-    <keyStore id="defaultKeyStore" password="password" />
-
-    <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="9080" httpsPort="9443" />
-
-    <webApplication location="events-viewer.war" contextRoot="/"/>
+    <library id="H2JDBCLib">
+        <fileset dir="${wlp.install.dir}/usr/servers/defaultServer/lib/global/" includes="h2-2.2.220.jar"/>
+    </library>
 </server>

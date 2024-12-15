@@ -1,4 +1,4 @@
-package krzysztof.pecyna.eventsViewer.config;
+package krzysztof.pecyna.eventsViewer.authentication.config;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.security.enterprise.authentication.mechanism.http.CustomFormAuthenticationMechanismDefinition;
@@ -16,7 +16,7 @@ import jakarta.security.enterprise.identitystore.Pbkdf2PasswordHash;
 @DatabaseIdentityStoreDefinition(
         dataSourceLookup = "jdbc/EventViewer",
         callerQuery = "select password from artists where lastName = ?",
-        groupsQuery = "select role from users__roles where id = (select id from users where lastName = ?)",
+        groupsQuery = "select role from users__roles where id = (select id from artists where lastName = ?)",
         hashAlgorithm = Pbkdf2PasswordHash.class
 )
 public class AuthenticationConfig {

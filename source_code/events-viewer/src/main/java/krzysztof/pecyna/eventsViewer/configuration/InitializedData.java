@@ -1,11 +1,9 @@
 package krzysztof.pecyna.eventsViewer.configuration;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.ejb.EJB;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.Initialized;
-import jakarta.enterprise.context.control.RequestContextController;
-import jakarta.enterprise.event.Observes;
+import jakarta.annotation.security.DeclareRoles;
+import jakarta.annotation.security.RunAs;
+import jakarta.ejb.*;
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.SecurityContext;
 import jakarta.servlet.ServletContextListener;
@@ -18,6 +16,7 @@ import krzysztof.pecyna.eventsViewer.location.service.LocationService;
 import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
 import krzysztof.pecyna.eventsViewer.performance.entity.PerformanceType;
 import krzysztof.pecyna.eventsViewer.performance.service.PerformanceService;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 
 import java.time.LocalDate;
@@ -26,7 +25,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-@ApplicationScoped
+@Singleton
+@Startup
+@TransactionAttribute(value = TransactionAttributeType.NOT_SUPPORTED)
+@NoArgsConstructor
+@DependsOn("InitializeAdminService")
+@DeclareRoles({UserRoles.ADMIN, UserRoles.USER})
+@RunAs(UserRoles.ADMIN)
 public class InitializedData implements ServletContextListener {
 
     private ArtistService artistService;

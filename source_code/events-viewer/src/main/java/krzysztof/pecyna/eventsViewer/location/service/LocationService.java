@@ -13,6 +13,7 @@ import krzysztof.pecyna.eventsViewer.performance.service.PerformanceService;
 import jakarta.ws.rs.NotFoundException;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,21 +36,24 @@ public class LocationService {
 
     }
 
-    @RolesAllowed({UserRoles.ADMIN,UserRoles.USER})
+    @RolesAllowed({UserRoles.ADMIN, UserRoles.USER})
     public Optional<Location> find(UUID id) {
-        Optional<Location> location = locationRepository.find(id);
-        if (location.isPresent()) {
-            List<Performance> performances = location.get().getPerformances();
+        return locationRepository.find(id).map(location -> {
+            List<Performance> performances = performanceService.findAllByLocation(location.getId()).orElse(Collections.emptyList());
+
             String currentUserName = securityContext.getCallerPrincipal().getName();
             boolean isAdmin = securityContext.isCallerInRole(UserRoles.ADMIN);
-            System.out.println(performances);
-            performances.removeIf(performance -> (!performance.getArtist().getLastName().equals(currentUserName)) && !isAdmin);
-            location.get().setPerformances(performances);
-        }
-        return location;
+
+            performances.removeIf(performance ->
+                    !isAdmin && !performance.getArtist().getLastName().equals(currentUserName)
+            );
+
+            location.setPerformances(performances);
+            return location;
+        });
     }
 
-    @RolesAllowed({UserRoles.ADMIN,UserRoles.USER})
+    @RolesAllowed({UserRoles.ADMIN, UserRoles.USER})
     public List<Location> findAll() {
         return locationRepository.findAll();
     }

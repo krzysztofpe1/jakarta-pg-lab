@@ -2,7 +2,7 @@ package krzysztof.pecyna.eventsViewer.artist.dto;
 
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,7 +30,7 @@ public class GetArtistResponse {
     public static class Performance {
         private UUID id;
 
-        private LocalDate date;
+        private LocalDateTime date;
     }
 
     @Singular

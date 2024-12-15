@@ -13,7 +13,7 @@ public interface PerformanceRepository extends Repository<Performance, UUID> {
 
     List<Performance> findAllByArtist(Artist artist);
 
-    List<Performance> findAllByLocation(Location location);
+    List<Performance> findAllByLocation(UUID location);
 
     Optional<Performance> findByIdAndArtist(UUID id, Artist artist);
 }
