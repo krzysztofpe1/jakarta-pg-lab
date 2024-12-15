@@ -8,7 +8,7 @@
     <ui:define name="content">
         <f:loadBundle var="msg" basename="krzysztof.pecyna.eventsViewer.view.all.i18n.messages"/>
         <article class="text--justified">
-            <header><h2>#{msg.locations}::</h2></header>
+            <header><h2>#{msg.locations}:</h2></header>
             <h:dataTable value="#{locationList.locations.locations}" var="location">
                 <h:column>
                     <h:link outcome="/location/location_view.xhtml">

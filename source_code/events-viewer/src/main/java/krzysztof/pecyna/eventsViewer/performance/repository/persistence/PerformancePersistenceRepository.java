@@ -1,9 +1,13 @@
 package krzysztof.pecyna.eventsViewer.performance.repository.persistence;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import krzysztof.pecyna.eventsViewer.artist.entity.Artist;
 import krzysztof.pecyna.eventsViewer.location.entity.Location;
 import krzysztof.pecyna.eventsViewer.performance.entity.Performance;
@@ -14,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Dependent
+@ApplicationScoped
 public class PerformancePersistenceRepository implements PerformanceRepository {
 
     private EntityManager em;
@@ -26,26 +30,35 @@ public class PerformancePersistenceRepository implements PerformanceRepository {
 
     @Override
     public List<Performance> findAllByArtist(Artist artist) {
-        return em.createQuery("select u from Performance u where u.artist = :artist", Performance.class)
-                .setParameter("artist", artist)
-                .getResultList();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Performance> cq = cb.createQuery(Performance.class);
+        Root<Performance> root = cq.from(Performance.class);
+        cq.select(root).where(cb.equal(root.get("artist"), artist));
+
+        return em.createQuery(cq).getResultList();
 
     }
 
     @Override
     public List<Performance> findAllByLocation(UUID location) {
-        return em.createQuery("select u from Performance u where u.location.id = :location", Performance.class)
-                .setParameter("location", location)
-                .getResultList();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Performance> cq = cb.createQuery(Performance.class);
+        Root<Performance> root = cq.from(Performance.class);
+        cq.select(root).where(cb.equal(root.get("location").get("id"), location));
+
+        return em.createQuery(cq).getResultList();
     }
 
     @Override
     public Optional<Performance> findByIdAndArtist(UUID id, Artist artist) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Performance> cq = cb.createQuery(Performance.class);
+        Root<Performance> root = cq.from(Performance.class);
+        cq.select(root)
+                .where(cb.equal(root.get("id"), id), cb.equal(root.get("artist"), artist));
+
         try {
-            return Optional.of(em.createQuery("select c from Performance c where c.id = :id and c.artist = :artist", Performance.class)
-                    .setParameter("artist", artist)
-                    .setParameter("id", id)
-                    .getSingleResult());
+            return Optional.of(em.createQuery(cq).getSingleResult());
         } catch (NoResultException ex) {
             return Optional.empty();
         }
@@ -69,6 +82,11 @@ public class PerformancePersistenceRepository implements PerformanceRepository {
     @Override
     public void delete(Performance entity) {
         em.remove(em.find(Performance.class, entity.getId()));
+    }
+
+    @Override
+    public void detach(Performance entity) {
+        em.detach(entity);
     }
 
     @Override

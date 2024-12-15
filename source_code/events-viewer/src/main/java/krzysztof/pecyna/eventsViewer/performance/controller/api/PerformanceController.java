@@ -38,6 +38,12 @@ public interface PerformanceController {
     @Path("/locations/{locationId}/performances/{performanceId}")
     void deleteLocationPerformance(@PathParam("locationId") UUID locationId, @PathParam("performanceId") UUID performanceId);
 
+    @PATCH
+    @Path("/performances/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    void patchPerformance(@PathParam("id") UUID id, PatchPerformanceRequest request);
+
+
     // Test only
     @GET
     @Path("/performances")

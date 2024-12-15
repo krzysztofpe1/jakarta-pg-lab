@@ -4,6 +4,7 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJBAccessException;
 import jakarta.ejb.LocalBean;
 import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionAttribute;
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.SecurityContext;
 import krzysztof.pecyna.eventsViewer.artist.entity.Artist;
@@ -64,6 +65,17 @@ public class PerformanceService {
         return findByLocationAndPerformance(locationId, performanceId);
     }
 
+    @RolesAllowed(UserRoles.USER)
+    public Optional<Performance> findForCallerPrincipal(UUID performanceId) {
+        if (securityContext.isCallerInRole(UserRoles.ADMIN)) {
+            return find(performanceId);
+        }
+        Artist artist = artistRepository.findByLastName(securityContext.getCallerPrincipal().getName())
+                .orElseThrow(IllegalStateException::new);
+        return find(artist, performanceId);
+
+    }
+
     @RolesAllowed({UserRoles.USER, UserRoles.ADMIN})
     public List<Performance> findAllForCallerPrincipal() {
         if (securityContext.isCallerInRole(UserRoles.ADMIN)) {
@@ -108,7 +120,11 @@ public class PerformanceService {
     }
 
     @RolesAllowed(UserRoles.USER)
+    @TransactionAttribute
     public void update(Performance performance, UUID initialLocation) {
+        Performance original = performanceRepository.find(performance.getId()).orElseThrow(IllegalStateException::new);
+
+        performanceRepository.detach(original);
         Performance existingPerformance = performanceRepository.find(performance.getId())
                 .orElseThrow(() -> new NotFoundException("Performance not found: " + performance.getId()));
 
@@ -134,6 +150,16 @@ public class PerformanceService {
 
         performanceRepository.update(existingPerformance);
     }
+
+
+    @RolesAllowed(UserRoles.USER)
+    @TransactionAttribute
+    public void update(Performance performance) {
+        Performance original = performanceRepository.find(performance.getId()).orElseThrow(IllegalStateException::new);
+        performanceRepository.detach(original);
+        performanceRepository.update(performance);
+    }
+
 
 
     @RolesAllowed(UserRoles.USER)

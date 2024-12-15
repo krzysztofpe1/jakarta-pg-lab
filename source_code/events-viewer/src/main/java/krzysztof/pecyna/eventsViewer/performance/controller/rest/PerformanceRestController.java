@@ -122,6 +122,25 @@ public class PerformanceRestController implements PerformanceController {
     }
 
     @Override
+    public void patchPerformance(UUID id, PatchPerformanceRequest request) {
+        try {
+            performanceService.find(id).ifPresentOrElse(
+                    entity -> {
+                        performanceService.update(factory.updatePerformance().apply(entity, request));
+                    },
+                    () -> {
+                        throw new NotFoundException();
+                    }
+            );
+        }  catch (TransactionalException ex) {
+            if (ex.getCause() instanceof OptimisticLockException) {
+                throw new BadRequestException(ex.getCause());
+            }
+        }
+    }
+
+
+    @Override
     public void deleteLocationPerformance(UUID locationId, UUID performanceId) {
         performanceService.findByLocationAndPerformance(locationId, performanceId).ifPresentOrElse(
                 entity -> performanceService.delete(performanceId),

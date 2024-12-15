@@ -79,11 +79,11 @@ public class PerformanceEdit implements Serializable {
     }
 
     public String saveAction() throws IOException {
-        if (performance.getLocation() == null || performance.getDate() == null) {
+        if (performance.getLocation() == null) {
             return null;
         }
         try {
-            performanceService.update(factory.updatePerformance().apply(performanceService.find(id).orElseThrow(), performance), initialLocation);
+            performanceService.update(factory.updatePerformance().apply(performanceService.findForCallerPrincipal(id).orElseThrow(), performance), initialLocation);
             String viewId = FacesContext.getCurrentInstance().getViewRoot().getViewId();
             return viewId + "?faces-redirect=true&includeViewParams=true";
         } catch (TransactionalException ex) {
